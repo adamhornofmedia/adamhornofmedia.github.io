@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Webhostingový srovnávač</title>
+  <style>
+    /* Dark mode Apple-like clean style */
+    @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+        Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: #121212;
+      color: #f5f5f7;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 2rem;
+      text-align: center;
+      font-weight: 600;
+      font-size: 2rem;
+      letter-spacing: -0.02em;
+      color: #f5f5f7;
+      border-bottom: 1px solid #2c2c2e;
+      user-select: none;
+    }
+
+    main {
+      flex: 1;
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      width: 100%;
+    }
+
+    .filter {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    select {
+      background: #1c1c1e;
+      border: none;
+      border-radius: 12px;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      color: #f5f5f7;
+      appearance: none;
+      cursor: pointer;
+      box-shadow: 0 0 8px #00000080;
+      transition: background-color 0.3s ease;
+      outline-offset: 2px;
+    }
+    select:hover, select:focus {
+      background: #2c2c2e;
+      box-shadow: 0 0 12px #0a84ffcc;
+      outline: none;
+    }
+
+    .card {
+      background: #1c1c1e;
+      border-radius: 24px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 20px rgb(0 0 0 / 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: transform 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgb(10 132 255 / 0.5);
+    }
+
+    .card h2 {
+      margin: 0;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #0a84ff;
+    }
+    .card p {
+      margin: 0;
+      font-weight: 400;
+      font-size: 1rem;
+      color: #c7c7cc;
+    }
+
+    .coupon {
+      margin-top: 1rem;
+      background: #0a84ff;
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      width: fit-content;
+      user-select: all;
+      box-shadow: 0 0 12px #0a84ffcc;
+    }
+
+    .button {
+      margin-top: 1rem;
+      background: transparent;
+      border: 1.5px solid #0a84ff;
+      color: #0a84ff;
+      padding: 0.7rem 1.5rem;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      width: fit-content;
+      text-decoration: none;
+      text-align: center;
+      user-select: none;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+    .button:hover {
+      background-color: #0a84ff;
+      color: #121212;
+      box-shadow: 0 0 12px #0a84ffdd;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.875rem;
+      color: #6e6e73;
+      user-select: none;
+      border-top: 1px solid #2c2c2e;
+    }
+  </style>
+</head>
+<body>
+  <header>Webhostingový srovnávač</header>
+
+  <main>
+    <div class="filter">
+      <select id="providerFilter" onchange="filterCards()">
+        <option value="all">Všechny služby</option>
+        <option value="wedos">WEDOS</option>
+        <option value="vas-hosting">Váš-Hosting</option>
+      </select>
+    </div>
+
+    <div id="cardsContainer">
+      <div class="card" data-provider="wedos">
+        <h2>WEDOS Hosting</h2>
+        <p>Spolehlivý hosting s 99.9% dostupností a SSL zdarma.</p>
+        <div class="coupon">Kupon: WEDOS2025</div>
+        <a href="https://www.wedos.cz" class="button" target="_blank" rel="noopener">Přejít na WEDOS</a>
+      </div>
+
+      <div class="card" data-provider="vas-hosting">
+        <h2>Váš-Hosting</h2>
+        <p>Český hosting s rychlou podporou a neomezeným přenosem dat.</p>
+        <div class="coupon">Kupon: VASHOSTING10</div>
+        <a href="https://vas-hosting.cz" class="button" target="_blank" rel="noopener">Přejít na Váš-Hosting</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>© 2025 Webhostingový srovnávač</footer>
+
+  <script>
+    function filterCards() {
+      const filter = document.getElementById('providerFilter').value;
+      const cards = document.querySelectorAll('#cardsContainer .card');
+      cards.forEach(card => {
+        card.style.display = (filter === 'all' || card.dataset.provider === filter) ? 'flex' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>
+
