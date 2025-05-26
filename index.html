@@ -3,11 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Webhostingový srovnávač</title>
+  <title>Hosting srovnání</title>
   <style>
-    /* Dark mode Apple-like clean style */
     @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Text:ital,wght@0,400;0,600;1,400&display=swap');
-
     body {
       margin: 0;
       font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
@@ -20,7 +18,6 @@
       flex-direction: column;
       min-height: 100vh;
     }
-
     header {
       padding: 2rem;
       text-align: center;
@@ -31,7 +28,6 @@
       border-bottom: 1px solid #2c2c2e;
       user-select: none;
     }
-
     main {
       flex: 1;
       max-width: 700px;
@@ -39,7 +35,6 @@
       padding: 0 1rem;
       width: 100%;
     }
-
     .filter {
       margin-bottom: 2rem;
       text-align: center;
@@ -62,7 +57,6 @@
       box-shadow: 0 0 12px #0a84ffcc;
       outline: none;
     }
-
     .card {
       background: #1c1c1e;
       border-radius: 24px;
@@ -78,7 +72,6 @@
       transform: translateY(-4px);
       box-shadow: 0 12px 24px rgb(10 132 255 / 0.5);
     }
-
     .card h2 {
       margin: 0;
       font-weight: 700;
@@ -91,7 +84,6 @@
       font-size: 1rem;
       color: #c7c7cc;
     }
-
     .coupon {
       margin-top: 1rem;
       background: #0a84ff;
@@ -104,7 +96,6 @@
       user-select: all;
       box-shadow: 0 0 12px #0a84ffcc;
     }
-
     .button {
       margin-top: 1rem;
       background: transparent;
@@ -126,7 +117,6 @@
       color: #121212;
       box-shadow: 0 0 12px #0a84ffdd;
     }
-
     footer {
       text-align: center;
       padding: 2rem 1rem;
@@ -139,41 +129,51 @@
 </head>
 <body>
   <header>Webhostingový srovnávač</header>
-
   <main>
     <div class="filter">
-      <select id="providerFilter" onchange="filterCards()">
+      <select id="serviceFilter" onchange="filterCards()">
         <option value="all">Všechny služby</option>
-        <option value="wedos">WEDOS</option>
-        <option value="vas-hosting">Váš-Hosting</option>
+        <option value="wordpress">WordPress Hosting</option>
+        <option value="vps">VPS</option>
+        <option value="mailhosting">Mailhosting</option>
+        <option value="shared">Sdílený hosting</option>
+        <option value="domains">Domény</option>
       </select>
     </div>
-
     <div id="cardsContainer">
-      <div class="card" data-provider="wedos">
+      <div class="card" data-services="wordpress,shared,domains">
         <h2>WEDOS Hosting</h2>
         <p>Spolehlivý hosting s 99.9% dostupností a SSL zdarma.</p>
-        <div class="coupon">Kupon: WEDOS2025</div>
+        <div class="coupon">DM251SAGIY – 50 % na domény (.EU, .ONLINE, .STORE, .TECH, .SITE, .WEBSITE, .SPACE, .FUN) do 30.6.2025</div>
+        <div class="coupon">WN252D9GBW – 70 % na Webhosting NoLimit a Extra do 31.12.2025</div>
         <a href="https://www.wedos.cz" class="button" target="_blank" rel="noopener">Přejít na WEDOS</a>
       </div>
-
-      <div class="card" data-provider="vas-hosting">
+      <div class="card" data-services="shared,mailhosting,domains">
         <h2>Váš-Hosting</h2>
         <p>Český hosting s rychlou podporou a neomezeným přenosem dat.</p>
         <div class="coupon">Kupon: VASHOSTING10</div>
         <a href="https://vas-hosting.cz" class="button" target="_blank" rel="noopener">Přejít na Váš-Hosting</a>
       </div>
+      <div class="card" data-services="vps,mailhosting">
+        <h2>ONEbit Hosting</h2>
+        <p>Kvalitní český hosting s každodenním zálohováním a podporou zdarma.</p>
+        <div class="coupon">KUPON: OBH2025 - sleva 25 %</div>
+        <a href="https://www.onebit.cz" class="button" target="_blank" rel="noopener">Přejít na ONEbit</a>
+      </div>
     </div>
   </main>
-
   <footer>© 2025 Webhostingový srovnávač</footer>
-
   <script>
     function filterCards() {
-      const filter = document.getElementById('providerFilter').value;
+      const filter = document.getElementById('serviceFilter').value;
       const cards = document.querySelectorAll('#cardsContainer .card');
       cards.forEach(card => {
-        card.style.display = (filter === 'all' || card.dataset.provider === filter) ? 'flex' : 'none';
+        if(filter === 'all') {
+          card.style.display = 'flex';
+          return;
+        }
+        const services = card.dataset.services.split(',');
+        card.style.display = services.includes(filter) ? 'flex' : 'none';
       });
     }
   </script>
