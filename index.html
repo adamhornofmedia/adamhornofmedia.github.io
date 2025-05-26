@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hosting srovnání</title>
+  <title>Webhostingový srovnávač</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Text:ital,wght@0,400;0,600;1,400&display=swap');
     body {
@@ -84,35 +84,36 @@
       font-size: 1rem;
       color: #c7c7cc;
     }
-    .coupon {
+    .coupon-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
       margin-top: 1rem;
+    }
+    .coupon {
       background: #0a84ff;
       color: white;
       padding: 0.4rem 0.8rem;
       border-radius: 9999px;
       font-weight: 600;
       font-size: 0.875rem;
-      width: fit-content;
       user-select: all;
       box-shadow: 0 0 12px #0a84ffcc;
+      width: fit-content;
     }
-    .button {
-      margin-top: 1rem;
+    .copy-btn {
       background: transparent;
       border: 1.5px solid #0a84ff;
       color: #0a84ff;
-      padding: 0.7rem 1.5rem;
+      padding: 0.4rem 1rem;
       border-radius: 14px;
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 0.875rem;
       cursor: pointer;
-      width: fit-content;
-      text-decoration: none;
-      text-align: center;
       user-select: none;
       transition: background-color 0.25s ease, color 0.25s ease;
     }
-    .button:hover {
+    .copy-btn:hover {
       background-color: #0a84ff;
       color: #121212;
       box-shadow: 0 0 12px #0a84ffdd;
@@ -131,33 +132,55 @@
   <header>Webhostingový srovnávač</header>
   <main>
     <div class="filter">
-      <select id="serviceFilter" onchange="filterCards()">
+      <select id="featureFilter" onchange="filterCards()">
         <option value="all">Všechny služby</option>
         <option value="wordpress">WordPress Hosting</option>
         <option value="vps">VPS</option>
         <option value="mailhosting">Mailhosting</option>
-        <option value="shared">Sdílený hosting</option>
-        <option value="domains">Domény</option>
       </select>
     </div>
     <div id="cardsContainer">
-      <div class="card" data-services="wordpress,shared,domains">
+      <div class="card" data-feature="wordpress vps mailhosting" data-provider="wedos">
         <h2>WEDOS Hosting</h2>
         <p>Spolehlivý hosting s 99.9% dostupností a SSL zdarma.</p>
-        <div class="coupon">DM251SAGIY – 50 % na domény (.EU, .ONLINE, .STORE, .TECH, .SITE, .WEBSITE, .SPACE, .FUN) do 30.6.2025</div>
-        <div class="coupon">WN252D9GBW – 70 % na Webhosting NoLimit a Extra do 31.12.2025</div>
+
+        <div class="coupon-container">
+          <div class="coupon" id="coupon1">DM251SAGIY</div>
+          <button class="copy-btn" onclick="copyCoupon('DM251SAGIY', this)">Kopírovat</button>
+        </div>
+        <p style="font-size:0.8rem; color:#a0a0a5; margin-top:0.2rem;">
+          50 % sleva na domény (.EU, .ONLINE, .STORE, .TECH, .SITE, .WEBSITE, .SPACE, .FUN) – platí do 30.6.2025
+        </p>
+
+        <div class="coupon-container">
+          <div class="coupon" id="coupon2">WN252D9GBW</div>
+          <button class="copy-btn" onclick="copyCoupon('WN252D9GBW', this)">Kopírovat</button>
+        </div>
+        <p style="font-size:0.8rem; color:#a0a0a5; margin-top:0.2rem;">
+          70 % sleva na Webhosting NoLimit a Extra – platí do 31.12.2025
+        </p>
+
         <a href="https://www.wedos.cz" class="button" target="_blank" rel="noopener">Přejít na WEDOS</a>
       </div>
-      <div class="card" data-services="shared,mailhosting,domains">
+      <div class="card" data-feature="wordpress mailhosting" data-provider="vas-hosting">
         <h2>Váš-Hosting</h2>
         <p>Český hosting s rychlou podporou a neomezeným přenosem dat.</p>
-        <div class="coupon">Kupon: VASHOSTING10</div>
+        <div class="coupon-container">
+          <div class="coupon">VASHOSTING10</div>
+          <button class="copy-btn" onclick="copyCoupon('VASHOSTING10', this)">Kopírovat</button>
+        </div>
         <a href="https://vas-hosting.cz" class="button" target="_blank" rel="noopener">Přejít na Váš-Hosting</a>
       </div>
-      <div class="card" data-services="vps,mailhosting">
+      <div class="card" data-feature="wordpress vps" data-provider="onebit">
         <h2>ONEbit Hosting</h2>
         <p>Kvalitní český hosting s každodenním zálohováním a podporou zdarma.</p>
-        <div class="coupon">KUPON: OBH2025 - sleva 25 %</div>
+        <div class="coupon-container">
+          <div class="coupon">OBH2025</div>
+          <button class="copy-btn" onclick="copyCoupon('OBH2025', this)">Kopírovat</button>
+        </div>
+        <p style="font-size:0.8rem; color:#a0a0a5; margin-top:0.2rem;">
+          Sleva 25 % na všechny hostingové služby – platí do 31.12.2025
+        </p>
         <a href="https://www.onebit.cz" class="button" target="_blank" rel="noopener">Přejít na ONEbit</a>
       </div>
     </div>
@@ -165,15 +188,25 @@
   <footer>© 2025 Webhostingový srovnávač</footer>
   <script>
     function filterCards() {
-      const filter = document.getElementById('serviceFilter').value;
+      const filter = document.getElementById('featureFilter').value;
       const cards = document.querySelectorAll('#cardsContainer .card');
       cards.forEach(card => {
-        if(filter === 'all') {
+        if (filter === 'all') {
           card.style.display = 'flex';
-          return;
+        } else {
+          const features = card.dataset.feature.split(' ');
+          card.style.display = features.includes(filter) ? 'flex' : 'none';
         }
-        const services = card.dataset.services.split(',');
-        card.style.display = services.includes(filter) ? 'flex' : 'none';
+      });
+    }
+
+    function copyCoupon(code, button) {
+      navigator.clipboard.writeText(code).then(() => {
+        const originalText = button.textContent;
+        button.textContent = 'Zkopírováno!';
+        setTimeout(() => {
+          button.textContent = originalText;
+        }, 1500);
       });
     }
   </script>
