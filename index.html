@@ -2,214 +2,122 @@
 <html lang="cs">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Webhostingový srovnávač</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adam Hornof</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Text:ital,wght@0,400;0,600;1,400&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      margin: 0;
-      font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-        Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      background-color: #121212;
-      color: #f5f5f7;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      background-color: #0f0f0f;
+      color: #fff;
+      line-height: 1.6;
     }
     header {
-      padding: 2rem;
+      padding: 4rem 2rem;
       text-align: center;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+    }
+    header h1 {
+      font-size: 3rem;
+      font-weight: 800;
+    }
+    header p {
+      font-size: 1.2rem;
+      color: #e0f7ff;
+      margin-top: 0.5rem;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 1rem;
+      background-color: #121212;
+    }
+    nav a {
+      color: #00c6ff;
+      text-decoration: none;
       font-weight: 600;
+    }
+    section {
+      max-width: 800px;
+      margin: 3rem auto;
+      padding: 0 2rem;
+    }
+    section h2 {
       font-size: 2rem;
-      letter-spacing: -0.02em;
-      color: #f5f5f7;
-      border-bottom: 1px solid #2c2c2e;
-      user-select: none;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #00c6ff;
+      display: inline-block;
+      padding-bottom: 0.3rem;
     }
-    main {
-      flex: 1;
-      max-width: 700px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-      width: 100%;
+    .project {
+      background: #1a1a1a;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      margin-bottom: 1.5rem;
     }
-    .filter {
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-    select {
-      background: #1c1c1e;
-      border: none;
-      border-radius: 12px;
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      color: #f5f5f7;
-      appearance: none;
-      cursor: pointer;
-      box-shadow: 0 0 8px #00000080;
-      transition: background-color 0.3s ease;
-      outline-offset: 2px;
-    }
-    select:hover, select:focus {
-      background: #2c2c2e;
-      box-shadow: 0 0 12px #0a84ffcc;
-      outline: none;
-    }
-    .card {
-      background: #1c1c1e;
-      border-radius: 24px;
-      padding: 1.5rem 2rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 8px 20px rgb(0 0 0 / 0.6);
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      transition: transform 0.2s ease;
-    }
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 24px rgb(10 132 255 / 0.5);
-    }
-    .card h2 {
-      margin: 0;
-      font-weight: 700;
-      font-size: 1.5rem;
-      color: #0a84ff;
-    }
-    .card p {
-      margin: 0;
-      font-weight: 400;
-      font-size: 1rem;
-      color: #c7c7cc;
-    }
-    .coupon-container {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-    .coupon {
-      background: #0a84ff;
-      color: white;
-      padding: 0.4rem 0.8rem;
-      border-radius: 9999px;
-      font-weight: 600;
-      font-size: 0.875rem;
-      user-select: all;
-      box-shadow: 0 0 12px #0a84ffcc;
-      width: fit-content;
-    }
-    .copy-btn {
-      background: transparent;
-      border: 1.5px solid #0a84ff;
-      color: #0a84ff;
-      padding: 0.4rem 1rem;
-      border-radius: 14px;
-      font-weight: 600;
-      font-size: 0.875rem;
-      cursor: pointer;
-      user-select: none;
-      transition: background-color 0.25s ease, color 0.25s ease;
-    }
-    .copy-btn:hover {
-      background-color: #0a84ff;
-      color: #121212;
-      box-shadow: 0 0 12px #0a84ffdd;
+    .project h3 {
+      font-size: 1.3rem;
+      color: #00c6ff;
     }
     footer {
       text-align: center;
-      padding: 2rem 1rem;
-      font-size: 0.875rem;
-      color: #6e6e73;
-      user-select: none;
-      border-top: 1px solid #2c2c2e;
+      padding: 2rem;
+      background-color: #121212;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+    a.button {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      background: #00c6ff;
+      color: #000;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+    a.button:hover {
+      background: #0072ff;
+      color: #fff;
     }
   </style>
 </head>
 <body>
-  <header>Webhostingový srovnávač</header>
-  <main>
-    <div class="filter">
-      <select id="featureFilter" onchange="filterCards()">
-        <option value="all">Všechny služby</option>
-        <option value="wordpress">WordPress Hosting</option>
-        <option value="vps">VPS</option>
-        <option value="mailhosting">Mailhosting</option>
-      </select>
+  <header>
+    <h1>Adam Hornof</h1>
+    <p>Student • Tvůrce • Geek • 3D Tisk • E-shop • Weby</p>
+  </header>
+  <nav>
+    <a href="#projekty">Projekty</a>
+    <a href="#kontakt">Kontakt</a>
+  </nav>
+  <section id="projekty">
+    <h2>Projekty</h2>
+    <div class="project">
+      <h3>TechMerch.cz</h3>
+      <p>E-shop s technologicky laděnými tričky. Print-on-demand bez starostí.</p>
+      <a class="button" href="https://techmerch.cz" target="_blank">Zobrazit</a>
     </div>
-    <div id="cardsContainer">
-      <div class="card" data-feature="wordpress vps mailhosting" data-provider="wedos">
-        <h2>WEDOS Hosting</h2>
-        <p>Spolehlivý hosting s 99.9% dostupností a SSL zdarma.</p>
-
-        <div class="coupon-container">
-          <div class="coupon" id="coupon1">DM251SAGIY</div>
-          <button class="copy-btn" onclick="copyCoupon('DM251SAGIY', this)">Kopírovat</button>
-        </div>
-        <p style="font-size:0.8rem; color:#a0a0a5; margin-top:0.2rem;">
-          50 % sleva na domény (.EU, .ONLINE, .STORE, .TECH, .SITE, .WEBSITE, .SPACE, .FUN) – platí do 30.6.2025
-        </p>
-
-        <div class="coupon-container">
-          <div class="coupon" id="coupon2">WN252D9GBW</div>
-          <button class="copy-btn" onclick="copyCoupon('WN252D9GBW', this)">Kopírovat</button>
-        </div>
-        <p style="font-size:0.8rem; color:#a0a0a5; margin-top:0.2rem;">
-          70 % sleva na Webhosting NoLimit a Extra – platí do 31.12.2025
-        </p>
-
-        <a href="https://www.wedos.cz" class="button" target="_blank" rel="noopener">Přejít na WEDOS</a>
-      </div>
-      <div class="card" data-feature="wordpress mailhosting" data-provider="vas-hosting">
-        <h2>Váš-Hosting</h2>
-        <p>Český hosting s rychlou podporou a neomezeným přenosem dat.</p>
-        <div class="coupon-container">
-          <div class="coupon">VASHOSTING10</div>
-          <button class="copy-btn" onclick="copyCoupon('VASHOSTING10', this)">Kopírovat</button>
-        </div>
-        <a href="https://vas-hosting.cz" class="button" target="_blank" rel="noopener">Přejít na Váš-Hosting</a>
-      </div>
-      <div class="card" data-feature="wordpress vps" data-provider="onebit">
-        <h2>ONEbit Hosting</h2>
-        <p>Kvalitní český hosting s každodenním zálohováním a podporou zdarma.</p>
-        <div class="coupon-container">
-          <div class="coupon">OBH2025</div>
-          <button class="copy-btn" onclick="copyCoupon('OBH2025', this)">Kopírovat</button>
-        </div>
-        <p style="font-size:0.8rem; color:#a0a0a5; margin-top:0.2rem;">
-          Sleva 25 % na všechny hostingové služby – platí do 31.12.2025
-        </p>
-        <a href="https://www.onebit.cz" class="button" target="_blank" rel="noopener">Přejít na ONEbit</a>
-      </div>
+    <div class="project">
+      <h3>3D tisk na zakázku</h3>
+      <p>Kalkulačka ceny, ukázky tisku a poptávkový formulář. Vlastní výroba s Creality Ender-3 V3 SE.</p>
     </div>
-  </main>
-  <footer>© 2025 Webhostingový srovnávač</footer>
-  <script>
-    function filterCards() {
-      const filter = document.getElementById('featureFilter').value;
-      const cards = document.querySelectorAll('#cardsContainer .card');
-      cards.forEach(card => {
-        if (filter === 'all') {
-          card.style.display = 'flex';
-        } else {
-          const features = card.dataset.feature.split(' ');
-          card.style.display = features.includes(filter) ? 'flex' : 'none';
-        }
-      });
-    }
-
-    function copyCoupon(code, button) {
-      navigator.clipboard.writeText(code).then(() => {
-        const originalText = button.textContent;
-        button.textContent = 'Zkopírováno!';
-        setTimeout(() => {
-          button.textContent = originalText;
-        }, 1500);
-      });
-    }
-  </script>
+    <div class="project">
+      <h3>Weby pro klienty</h3>
+      <p>WordPressové weby – například pro zubaře, kamaráda grafika nebo covid data.</p>
+    </div>
+  </section>
+  <section id="kontakt">
+    <h2>Kontakt</h2>
+    <p>Rád si popovídám o spolupráci, nápadech i projektech. Ozvi se mi 👇</p>
+    <p>Email: <a href="mailto:jsem@adamhornof.cz">jsem@adamhornof.cz</a></p>
+    <p>Discord: hornof#1234</p>
+  </section>
+  <footer>
+    &copy; 2025 Adam Hornof. Všechna práva vyhrazena.
+  </footer>
 </body>
 </html>
-
