@@ -92,6 +92,19 @@
       margin-bottom: 0.5rem;
     }
   </style>
+<!-- Google Analytics bez cookies -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XGECGL3ETS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XGECGL3ETS', {
+    'anonymize_ip': true,
+    'storage': 'none',
+    'allow_google_signals': false,
+    'allow_ad_personalization_signals': false
+  });
+</script>
 </head>
 <body>
   <header>
@@ -139,10 +152,14 @@
     <p>Rád si popovídám o spolupráci, nápadech i projektech. Ozvi se mi 👇</p>
     <p>Email: <a href="mailto:jsem@adamhornof.cz">jsem@adamhornof.cz</a></p>
   </section>
+</footer>
   <footer>
-    &copy; 2025 Adam Hornof. Všechna práva vyhrazena.<br>
+    &copy; <span id="currentYear"></span> Adam Hornof. Všechna práva vyhrazena.<br>
     IČO: 23294566<br>
     Sídlo: Nové sady 988/2, Brno, 602 00
   </footer>
+  <script>
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
