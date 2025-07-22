@@ -6,6 +6,15 @@
   <title>Adam Hornof</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Inter', sans-serif;
@@ -159,7 +168,7 @@
     <a href="#projekty">Projekty</a>
     <a href="#kontakt">Kontakt</a>
   </nav>
-  <section id="o-mne">
+  <section id="o-mne" class="fade-in">
     <h2>O mně</h2>
     <p>
       Jsem Adam Hornof – student a tvůrce webů, který se nebojí zkoušet nové věci.
@@ -167,7 +176,7 @@
       Baví mě ecommerce, technologie a čistý webový design.
     </p>
   </section>
-  <section id="stack">
+  <section id="stack" class="fade-in">
     <h2>Používám</h2>
     <div class="tool-icons">
       <div>
@@ -192,7 +201,7 @@
       </div>
     </div>
   </section>
-  <section id="projekty">
+  <section id="projekty" class="fade-in">
     <h2>Projekty</h2>
     <div class="project">
       <h3>TechMerch.cz</h3>
@@ -233,7 +242,7 @@
       <a class="button" href="https://gameskill.eu?adamhornof.cz" target="_blank">Zobrazit</a>
     </div>
   </section>
-  <section id="kontakt">
+  <section id="kontakt" class="fade-in">
     <h2>Kontakt</h2>
     <p>Rád si popovídám o spolupráci, nápadech i projektech. Ozvi se mi 👇</p>
     <p>
@@ -268,6 +277,27 @@
     if (userLang.startsWith("en") && window.location.pathname === "/") {
       window.location.href = "/en/";
     }
+
+    // Fade-in animace při scrollování
+    const faders = document.querySelectorAll('.fade-in');
+
+    const appearOnScroll = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.1
+      }
+    );
+
+    faders.forEach(fader => {
+      appearOnScroll.observe(fader);
+    });
   </script>
 </body>
 </html>

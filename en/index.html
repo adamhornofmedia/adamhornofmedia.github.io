@@ -140,6 +140,16 @@
     transform: scale(1.2);
     transition: transform 0.3s ease;
   }
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
   </style>
 <!-- Google Analytics bez cookies -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XGECGL3ETS"></script>
@@ -165,7 +175,7 @@
     <a href="#projekty">Projects</a>
     <a href="#kontakt">Contact</a>
   </nav>
-  <section id="o-mne">
+  <section id="o-mne" class="fade-in">
     <h2>About Me</h2>
     <p>
       I'm Adam Hornof – a student and web creator who isn't afraid to try new things.
@@ -173,7 +183,7 @@
       I'm passionate about ecommerce, technology, and clean web design.
     </p>
   </section>
-  <section id="stack">
+  <section id="stack" class="fade-in">
     <h2>Tools I Use</h2>
     <div class="tool-icons">
       <div>
@@ -198,7 +208,7 @@
       </div>
     </div>
   </section>
-  <section id="projekty">
+  <section id="projekty" class="fade-in">
     <h2>Projects</h2>
     <div class="project">
       <h3>TechMerch.cz</h3>
@@ -239,7 +249,7 @@
       <a class="button" href="https://gameskill.eu?adamhornof.cz" target="_blank">View</a>
     </div>
   </section>
-  <section id="kontakt">
+  <section id="kontakt" class="fade-in">
     <h2>Contact</h2>
     <p>I'm happy to talk about projects, ideas or anything you'd like to collaborate on 👇</p>
     <p>
@@ -268,6 +278,26 @@
   </footer>
   <script>
     document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+const faders = document.querySelectorAll('.fade-in');
+
+const appearOnScroll = new IntersectionObserver(
+  (entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  },
+  {
+    threshold: 0.1
+  }
+);
+
+faders.forEach(fader => {
+  appearOnScroll.observe(fader);
+});
   </script>
 </body>
 </html>
