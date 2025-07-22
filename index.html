@@ -40,13 +40,7 @@
       color: #e0f7ff;
       margin-top: 0.5rem;
     }
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      padding: 1rem;
-      background-color: #121212;
-    }
+    /* nav style moved to HTML inline style */
     nav a {
       color: #00c6ff;
       text-decoration: none;
@@ -160,12 +154,10 @@
     <h1>Adam Hornof</h1>
     <p>Student • Tvůrce • Geek • Ecommerce • Weby</p>
   </header>
-  <nav>
-    <div style="display: flex; gap: 2rem; flex-grow: 1;">
-      <a href="#o-mne">O mně</a>
-      <a href="#projekty">Projekty</a>
-      <a href="#kontakt">Kontakt</a>
-    </div>
+  <nav style="display: flex; justify-content: center; gap: 2rem; padding: 1rem; background-color: #121212;">
+    <a href="#o-mne">O mně</a>
+    <a href="#projekty">Projekty</a>
+    <a href="#kontakt">Kontakt</a>
     <a href="/en/" style="color: #aaa;">🇬🇧 English</a>
   </nav>
   <section id="o-mne">
