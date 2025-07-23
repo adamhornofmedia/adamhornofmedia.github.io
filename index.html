@@ -171,7 +171,7 @@
   <section id="o-mne" class="fade-in">
     <h2>O mně</h2>
     <p>
-      Jsem Adam Hornof – student a tvůrce webů, který se nebojí zkoušet nové věci.
+      Jsem Adam Hornof – <span id="age"></span>letý student a tvůrce webů, který se nebojí zkoušet nové věci.
       Věnuji se projektům, které mají smysl, od technické podpory neziskovek až po vlastní e-shopy.
       Baví mě ecommerce, technologie a čistý webový design.
     </p>
@@ -275,6 +275,20 @@
   </footer>
   <script>
     document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // Věk podle data narození
+    function calculateAge(birthDateString) {
+      const today = new Date();
+      const birthDate = new Date(birthDateString);
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      return age;
+    }
+
+    document.getElementById('age').textContent = calculateAge('2005-10-25');
 
     // Automatické přesměrování na EN verzi, pokud jazyk systému začíná na "en"
     const userLang = navigator.language || navigator.userLanguage;
