@@ -369,43 +369,103 @@
     });
 
     // Spotify widget
-    async function loadNowPlaying() {
-      const res = await fetch("https://adamhornofmedia-github-io.vercel.app/api/spotify");
-      const data = await res.json();
+    let lastTrackId = null;
+let trackEndTimestamp = null;
 
-      if (!data || !data.item) {
-        document.getElementById("spotify-widget").innerHTML = "Nic nehraje";
-        return;
-      }
+async function loadNowPlaying() {
+  const res = await fetch("https://adamhornofmedia-github-io.vercel.app/api/spotify");
+  const data = await res.json();
 
-      const song = data.item.name;
-      const artist = data.item.artists.map(a => a.name).join(", ");
-      const img = data.item.album.images[0].url;
-      const link = data.item.external_urls.spotify;
+  const widget = document.getElementById("spotify-widget");
 
-      document.getElementById("spotify-widget").innerHTML = `
-        <div style="display:flex;align-items:center;gap:10px;">
-          <img src="${img}" alt="Album cover" style="width:64px;height:64px;">
-          <div>
-            <a href="${link}" target="_blank" class="spotify-song-link">
-              ${song}
-            </a>
-            <div>${artist}</div>
-            <div style="margin-top:8px;">
-              <div style="background:#222; border-radius:4px; height:8px; width:180px; position:relative;">
-                <div style="background:#00c6ff; height:8px; border-radius:4px; width:${Math.round(data.progress_ms/data.item.duration_ms*180)}px;"></div>
-              </div>
-              <div style="font-size:0.9em; color:#aaa; margin-top:2px;">
-                Zbývá ${Math.floor((data.item.duration_ms-data.progress_ms)/60000)}:${String(Math.floor(((data.item.duration_ms-data.progress_ms)%60000)/1000)).padStart(2, '0')} min
-              </div>
-            </div>
+  if (!data || !data.item) {
+    widget.innerHTML = "Nic nehraje";
+    lastTrackId = null;
+    trackEndTimestamp = null;
+    return;
+  }
+
+  const song = data.item.name;
+  const artist = data.item.artists.map(a => a.name).join(", ");
+  const img = data.item.album.images[0].url;
+  const link = data.item.external_urls.spotify;
+  const trackId = data.item.id;
+  const progressMs = data.progress_ms;
+  const durationMs = data.item.duration_ms;
+
+  // Pokud je nová skladba, nastav trackEndTimestamp
+  if (trackId !== lastTrackId) {
+    lastTrackId = trackId;
+    trackEndTimestamp = Date.now() + (durationMs - progressMs);
+  }
+
+  // Vypočítej zbývající čas podle trackEndTimestamp
+  let remainingMs = trackEndTimestamp - Date.now();
+  if (remainingMs < 0) remainingMs = 0;
+  const min = Math.floor(remainingMs / 60000);
+  const sec = String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, '0');
+
+  // Vypočítej progress bar podle zbývajícího času
+  const playedMs = durationMs - remainingMs;
+  const progressWidth = Math.round(playedMs / durationMs * 180);
+
+  widget.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;">
+      <img src="${img}" alt="Album cover" style="width:64px;height:64px;">
+      <div>
+        <a href="${link}" target="_blank" class="spotify-song-link">
+          ${song}
+        </a>
+        <div>${artist}</div>
+        <div style="margin-top:8px;">
+          <div style="background:#222; border-radius:4px; height:8px; width:180px; position:relative;">
+            <div style="background:#00c6ff; height:8px; border-radius:4px; width:${progressWidth}px;"></div>
+          </div>
+          <div style="font-size:0.9em; color:#aaa; margin-top:2px;">
+            Zbývá ${min}:${sec} min
           </div>
         </div>
-      `;
+      </div>
+    </div>
+  `;
+}
+
+// První načtení dat ze Spotify
+loadNowPlaying();
+// Poté už jen každou sekundu dopočítáváme čas a progress bar, API voláme jen při nové písni
+setInterval(() => {
+  if (lastTrackId) {
+    // Pouze dopočítáváme zbývající čas a progress bar
+    const widget = document.getElementById("spotify-widget");
+    let remainingMs = trackEndTimestamp - Date.now();
+    if (remainingMs < 0) remainingMs = 0;
+    const min = Math.floor(remainingMs / 60000);
+    const sec = String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, '0');
+
+    // Potřebujeme durationMs a img/link/song/artist z posledního volání, proto si je uložíme do closure
+    // Nejjednodušší je volat loadNowPlaying() při nové písni, jinak si data musíš uložit do proměnných
+
+    // Pokud skladba doběhla, načti znovu z API
+    if (remainingMs === 0) {
+      loadNowPlaying();
+      return;
     }
 
+    // Vypočítej progress bar
+    const durationMs = trackEndTimestamp - (Date.now() - (trackEndTimestamp - Date.now()));
+    const playedMs = (trackEndTimestamp - Date.now()) > 0 ? (Date.now() + (durationMs - (trackEndTimestamp - Date.now()))) - (trackEndTimestamp - durationMs) : durationMs;
+    const progressWidth = Math.round((durationMs - remainingMs) / durationMs * 180);
+
+    // Najdi aktuální HTML a uprav progress bar + čas
+    const progressBar = widget.querySelector('div[style*="background:#00c6ff"]');
+    if (progressBar) progressBar.style.width = `${progressWidth}px`;
+    const timeDiv = widget.querySelector('div[style*="font-size:0.9em"]');
+    if (timeDiv) timeDiv.textContent = `Zbývá ${min}:${sec} min`;
+  } else {
+    // Pokud není skladba, načti z API
     loadNowPlaying();
-    setInterval(loadNowPlaying, 1000);
+  }
+}, 1000);
   </script>
 </body>
 </html>
