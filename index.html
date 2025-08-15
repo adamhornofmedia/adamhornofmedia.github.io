@@ -194,6 +194,7 @@
       Věnuji se projektům, které mají smysl, od technické podpory neziskovek až po vlastní e-shopy.
       Baví mě ecommerce, technologie a čistý webový design.
     </p>
+    <div id="spotify-widget">Načítám...</div>
   </section>
   <section id="stack" class="fade-in">
     <h2>Používám</h2>
@@ -349,6 +350,37 @@
     faders.forEach(fader => {
       appearOnScroll.observe(fader);
     });
+
+    // Spotify widget
+    async function loadNowPlaying() {
+      const res = await fetch("https://adamhornofmedia-github-io.vercel.app/api/spotify");
+      const data = await res.json();
+
+      if (!data || !data.item) {
+        document.getElementById("spotify-widget").innerHTML = "Nic nehraje";
+        return;
+      }
+
+      const song = data.item.name;
+      const artist = data.item.artists.map(a => a.name).join(", ");
+      const img = data.item.album.images[0].url;
+      const link = data.item.external_urls.spotify;
+
+      document.getElementById("spotify-widget").innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;">
+          <img src="${img}" alt="Album cover" style="width:64px;height:64px;">
+          <div>
+            <a href="${link}" target="_blank" style="font-weight:bold;color:black;text-decoration:none;">
+              ${song}
+            </a>
+            <div>${artist}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    loadNowPlaying();
+    setInterval(loadNowPlaying, 5000);
   </script>
 </body>
 </html>
