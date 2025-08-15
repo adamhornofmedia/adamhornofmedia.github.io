@@ -371,6 +371,7 @@
     // Spotify widget
     let lastTrackId = null;
 let trackEndTimestamp = null;
+let lastSongData = null; // přidáno
 
 async function loadNowPlaying() {
   const res = await fetch("https://adamhornofmedia-github-io.vercel.app/api/spotify");
@@ -382,6 +383,7 @@ async function loadNowPlaying() {
     widget.innerHTML = "Nic nehraje";
     lastTrackId = null;
     trackEndTimestamp = null;
+    lastSongData = null;
     return;
   }
 
@@ -392,6 +394,9 @@ async function loadNowPlaying() {
   const trackId = data.item.id;
   const progressMs = data.progress_ms;
   const durationMs = data.item.duration_ms;
+
+  // Ulož data o skladbě pro další dopočítávání
+  lastSongData = { song, artist, img, link, durationMs };
 
   // Pokud je nová skladba, nastav trackEndTimestamp
   if (trackId !== lastTrackId) {
@@ -418,10 +423,10 @@ async function loadNowPlaying() {
         </a>
         <div>${artist}</div>
         <div style="margin-top:8px;">
-          <div style="background:#222; border-radius:4px; height:8px; width:180px; position:relative;">
-            <div style="background:#00c6ff; height:8px; border-radius:4px; width:${progressWidth}px;"></div>
+          <div class="spotify-progress-bar" style="background:#222; border-radius:4px; height:8px; width:180px; position:relative;">
+            <div class="spotify-progress" style="background:#00c6ff; height:8px; border-radius:4px; width:${progressWidth}px;"></div>
           </div>
-          <div style="font-size:0.9em; color:#aaa; margin-top:2px;">
+          <div class="spotify-remaining" style="font-size:0.9em; color:#aaa; margin-top:2px;">
             Zbývá ${min}:${sec} min
           </div>
         </div>
@@ -432,10 +437,10 @@ async function loadNowPlaying() {
 
 // První načtení dat ze Spotify
 loadNowPlaying();
+
 // Poté už jen každou sekundu dopočítáváme čas a progress bar, API voláme jen při nové písni
 setInterval(() => {
-  if (lastTrackId) {
-    // Pouze dopočítáváme zbývající čas a progress bar
+  if (lastTrackId && lastSongData && trackEndTimestamp) {
     const widget = document.getElementById("spotify-widget");
     let remainingMs = trackEndTimestamp - Date.now();
     if (remainingMs < 0) remainingMs = 0;
