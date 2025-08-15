@@ -370,112 +370,131 @@
 
     // Spotify widget
     let lastTrackId = null;
-let trackEndTimestamp = null;
-let lastSongData = null;
-let apiInterval = null;
+  let trackEndTimestamp = null;
+  let lastSongData = null;
+  let apiInterval = null;
 
-async function loadNowPlaying() {
-  const res = await fetch("https://adamhornofmedia-github-io.vercel.app/api/spotify");
-  const data = await res.json();
+  async function loadNowPlaying() {
+    const res = await fetch("https://adamhornofmedia-github-io.vercel.app/api/spotify");
+    const data = await res.json();
 
-  const widget = document.getElementById("spotify-widget");
+    const widget = document.getElementById("spotify-widget");
 
-  if (!data || !data.item) {
-    widget.innerHTML = `
-      <div style="display:flex;align-items:center;gap:10px;">
-        <img src="/icons/spotify.svg" alt="Spotify" style="width:48px;height:48px;">
-        <div style="color:#aaa;">Aktuálně nic neposlouchám</div>
-      </div>
-    `;
-    lastTrackId = null;
-    trackEndTimestamp = null;
-    lastSongData = null;
-
-    // Pokud nic nehraje, obnovuj API každou minutu
-    if (!apiInterval) {
-      apiInterval = setInterval(loadNowPlaying, 60000);
-    }
-    return;
-  }
-
-  // Pokud něco hraje, zruš interval pro obnovu API
-  if (apiInterval) {
-    clearInterval(apiInterval);
-    apiInterval = null;
-  }
-
-  const song = data.item.name;
-  const artist = data.item.artists.map(a => a.name).join(", ");
-  const img = data.item.album.images[0].url;
-  const link = data.item.external_urls.spotify;
-  const trackId = data.item.id;
-  const progressMs = data.progress_ms;
-  const durationMs = data.item.duration_ms;
-
-  lastSongData = { song, artist, img, link, durationMs };
-
-  // Pokud je nová skladba, nastav trackEndTimestamp
-  if (trackId !== lastTrackId) {
-    lastTrackId = trackId;
-    trackEndTimestamp = Date.now() + (durationMs - progressMs);
-  }
-
-  let remainingMs = trackEndTimestamp - Date.now();
-  if (remainingMs < 0) remainingMs = 0;
-  const min = Math.floor(remainingMs / 60000);
-  const sec = String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, '0');
-
-  const playedMs = durationMs - remainingMs;
-  const progressWidth = Math.round(playedMs / durationMs * 180);
-
-  widget.innerHTML = `
-    <div style="display:flex;align-items:center;gap:10px;">
-      <img src="${img}" alt="Album cover" style="width:64px;height:64px;">
-      <div>
-        <a href="${link}" target="_blank" class="spotify-song-link">
-          ${song}
-        </a>
-        <div>${artist}</div>
-        <div style="margin-top:8px;">
-          <div class="spotify-progress-bar" style="background:#222; border-radius:4px; height:8px; width:180px; position:relative;">
-            <div class="spotify-progress" style="background:#00c6ff; height:8px; border-radius:4px; width:${progressWidth}px;"></div>
-          </div>
-          <div class="spotify-remaining" style="font-size:0.9em; color:#aaa; margin-top:2px;">
-            Zbývá ${min}:${sec} min
-          </div>
+    if (!data || !data.item) {
+      widget.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;">
+          <img src="/icons/spotify.svg" alt="Spotify" style="width:48px;height:48px;">
+          <div style="color:#aaa;">Aktuálně nic neposlouchám</div>
         </div>
-      </div>
-    </div>
-  `;
-}
+      `;
+      lastTrackId = null;
+      trackEndTimestamp = null;
+      lastSongData = null;
 
-// První načtení dat ze Spotify
-loadNowPlaying();
+      // Pokud nic nehraje, obnovuj API každou minutu
+      if (!apiInterval) {
+        apiInterval = setInterval(loadNowPlaying, 60000);
+      }
+      return;
+    }
 
-// Každou sekundu dopočítáváme progress bar a čas, API voláme jen při nové písni nebo když nic nehraje
-setInterval(() => {
-  const widget = document.getElementById("spotify-widget");
-  if (lastTrackId && lastSongData && trackEndTimestamp) {
-    let remainingMs = trackEndTimestamp - Date.now();
-    if (remainingMs < 0) remainingMs = 0;
+    // Pokud něco hraje, zruš interval pro obnovu API
+    if (apiInterval) {
+      clearInterval(apiInterval);
+      apiInterval = null;
+    }
+
+    const song = data.item.name;
+    const artist = data.item.artists.map(a => a.name).join(", ");
+    const img = data.item.album.images[0].url;
+    const link = data.item.external_urls.spotify;
+    const trackId = data.item.id;
+    const progressMs = data.progress_ms;
+    const durationMs = data.item.duration_ms;
+    const isPlaying = data.is_playing; // <-- důležité!
+
+    lastSongData = { song, artist, img, link, durationMs, progressMs, isPlaying };
+
+    // Pokud je nová skladba, nastav trackEndTimestamp
+    if (trackId !== lastTrackId) {
+      lastTrackId = trackId;
+      trackEndTimestamp = Date.now() + (durationMs - progressMs);
+    }
+
+    let remainingMs, playedMs, progressWidth;
+    if (isPlaying) {
+      remainingMs = trackEndTimestamp - Date.now();
+      if (remainingMs < 0) remainingMs = 0;
+      playedMs = durationMs - remainingMs;
+    } else {
+      playedMs = progressMs;
+      remainingMs = durationMs - playedMs;
+    }
+    progressWidth = Math.round(playedMs / durationMs * 180);
+
     const min = Math.floor(remainingMs / 60000);
     const sec = String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, '0');
 
-    const durationMs = lastSongData.durationMs;
-    const playedMs = durationMs - remainingMs;
-    const progressWidth = Math.round(playedMs / durationMs * 180);
-
-    const progressBar = widget.querySelector('.spotify-progress');
-    if (progressBar) progressBar.style.width = `${progressWidth}px`;
-    const timeDiv = widget.querySelector('.spotify-remaining');
-    if (timeDiv) timeDiv.textContent = `Zbývá ${min}:${sec} min`;
-
-    // Pokud skladba doběhla, načti znovu z API
-    if (remainingMs === 0) {
-      loadNowPlaying();
-    }
+    widget.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;">
+        <img src="${img}" alt="Album cover" style="width:64px;height:64px;">
+        <div>
+          <a href="${link}" target="_blank" class="spotify-song-link">
+            ${song}
+          </a>
+          <div>${artist}</div>
+          <div style="margin-top:8px;">
+            <div class="spotify-progress-bar" style="background:#222; border-radius:4px; height:8px; width:180px; position:relative;">
+              <div class="spotify-progress" style="background:#00c6ff; height:8px; border-radius:4px; width:${progressWidth}px;"></div>
+            </div>
+            <div class="spotify-remaining" style="font-size:0.9em; color:#aaa; margin-top:2px;">
+              Zbývá ${min}:${sec} min
+            </div>
+            ${!isPlaying ? '<div style="color:#00c6ff; font-size:0.9em; margin-top:2px;">Pozastaveno</div>' : ''}
+          </div>
+        </div>
+      </div>
+    `;
   }
-}, 1000);
+
+  // První načtení dat ze Spotify
+  loadNowPlaying();
+
+  // Každou sekundu dopočítáváme progress bar a čas, API voláme jen při nové písni nebo když nic nehraje
+  setInterval(() => {
+    const widget = document.getElementById("spotify-widget");
+    if (lastTrackId && lastSongData && trackEndTimestamp) {
+      let remainingMs, playedMs, progressWidth;
+      if (lastSongData.isPlaying) {
+        remainingMs = trackEndTimestamp - Date.now();
+        if (remainingMs < 0) remainingMs = 0;
+        playedMs = lastSongData.durationMs - remainingMs;
+      } else {
+        playedMs = lastSongData.progressMs;
+        remainingMs = lastSongData.durationMs - playedMs;
+      }
+      progressWidth = Math.round(playedMs / lastSongData.durationMs * 180);
+
+      const min = Math.floor(remainingMs / 60000);
+      const sec = String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, '0');
+
+      const progressBar = widget.querySelector('.spotify-progress');
+      if (progressBar) progressBar.style.width = `${progressWidth}px`;
+      const timeDiv = widget.querySelector('.spotify-remaining');
+      if (timeDiv) timeDiv.textContent = `Zbývá ${min}:${sec} min`;
+
+      // Pozastaveno info
+      const pausedDiv = widget.querySelector('.spotify-paused');
+      if (pausedDiv) {
+        pausedDiv.style.display = lastSongData.isPlaying ? 'none' : 'block';
+      }
+
+      // Pokud skladba doběhla, načti znovu z API
+      if (remainingMs === 0) {
+        loadNowPlaying();
+      }
+    }
+  }, 1000);
   </script>
 </body>
 </html>

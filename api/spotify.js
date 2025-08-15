@@ -35,6 +35,8 @@ export default async function handler(req, res) {
   }
 
   const nowPlayingData = await nowPlayingResponse.json();
+  const isPlaying = nowPlayingData.is_playing;
+
   res.setHeader("Access-Control-Allow-Origin", "*"); // povolíme pro tvůj web
-  res.json(nowPlayingData);
+  res.json({ ...nowPlayingData, isPlaying });
 }
