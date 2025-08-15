@@ -371,7 +371,8 @@
     // Spotify widget
     let lastTrackId = null;
 let trackEndTimestamp = null;
-let lastSongData = null; // přidáno
+let lastSongData = null;
+let apiInterval = null;
 
 async function loadNowPlaying() {
   const res = await fetch("https://adamhornofmedia-github-io.vercel.app/api/spotify");
@@ -381,15 +382,26 @@ async function loadNowPlaying() {
 
   if (!data || !data.item) {
     widget.innerHTML = `
-    <div style="display:flex;align-items:center;gap:10px;">
-      <img src="/icons/spotify.svg" alt="Spotify" style="width:48px;height:48px;">
-      <div style="color:#aaa;">Aktuálně nic neposlouchám</div>
-    </div>
-  `;
+      <div style="display:flex;align-items:center;gap:10px;">
+        <img src="/icons/spotify.svg" alt="Spotify" style="width:48px;height:48px;">
+        <div style="color:#aaa;">Aktuálně nic neposlouchám</div>
+      </div>
+    `;
     lastTrackId = null;
     trackEndTimestamp = null;
     lastSongData = null;
+
+    // Pokud nic nehraje, obnovuj API každou minutu
+    if (!apiInterval) {
+      apiInterval = setInterval(loadNowPlaying, 60000);
+    }
     return;
+  }
+
+  // Pokud něco hraje, zruš interval pro obnovu API
+  if (apiInterval) {
+    clearInterval(apiInterval);
+    apiInterval = null;
   }
 
   const song = data.item.name;
@@ -400,7 +412,6 @@ async function loadNowPlaying() {
   const progressMs = data.progress_ms;
   const durationMs = data.item.duration_ms;
 
-  // Ulož data o skladbě pro další dopočítávání
   lastSongData = { song, artist, img, link, durationMs };
 
   // Pokud je nová skladba, nastav trackEndTimestamp
@@ -409,13 +420,11 @@ async function loadNowPlaying() {
     trackEndTimestamp = Date.now() + (durationMs - progressMs);
   }
 
-  // Vypočítej zbývající čas podle trackEndTimestamp
   let remainingMs = trackEndTimestamp - Date.now();
   if (remainingMs < 0) remainingMs = 0;
   const min = Math.floor(remainingMs / 60000);
   const sec = String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, '0');
 
-  // Vypočítej progress bar podle zbývajícího času
   const playedMs = durationMs - remainingMs;
   const progressWidth = Math.round(playedMs / durationMs * 180);
 
@@ -443,10 +452,10 @@ async function loadNowPlaying() {
 // První načtení dat ze Spotify
 loadNowPlaying();
 
-// Poté už jen každou sekundu dopočítáváme čas a progress bar, API voláme jen při nové písni
+// Každou sekundu dopočítáváme progress bar a čas, API voláme jen při nové písni nebo když nic nehraje
 setInterval(() => {
+  const widget = document.getElementById("spotify-widget");
   if (lastTrackId && lastSongData && trackEndTimestamp) {
-    const widget = document.getElementById("spotify-widget");
     let remainingMs = trackEndTimestamp - Date.now();
     if (remainingMs < 0) remainingMs = 0;
     const min = Math.floor(remainingMs / 60000);
@@ -456,7 +465,6 @@ setInterval(() => {
     const playedMs = durationMs - remainingMs;
     const progressWidth = Math.round(playedMs / durationMs * 180);
 
-    // Najdi progress bar a čas podle třídy
     const progressBar = widget.querySelector('.spotify-progress');
     if (progressBar) progressBar.style.width = `${progressWidth}px`;
     const timeDiv = widget.querySelector('.spotify-remaining');
@@ -466,9 +474,6 @@ setInterval(() => {
     if (remainingMs === 0) {
       loadNowPlaying();
     }
-  } else {
-    // Pokud není skladba, načti z API
-    loadNowPlaying();
   }
 }, 1000);
   </script>
