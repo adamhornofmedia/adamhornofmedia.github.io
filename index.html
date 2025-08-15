@@ -168,6 +168,16 @@
   transform: scale(1.2);
   background: #00c6ff;
 }
+.spotify-song-link {
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .spotify-song-link:hover {
+    color: #00c6ff;
+    text-decoration: underline;
+  }
   </style>
 <!-- Google Analytics bez cookies -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XGECGL3ETS"></script>
@@ -377,10 +387,18 @@
         <div style="display:flex;align-items:center;gap:10px;">
           <img src="${img}" alt="Album cover" style="width:64px;height:64px;">
           <div>
-            <a href="${link}" target="_blank" style="font-weight:bold;color:white;text-decoration:none;">
+            <a href="${link}" target="_blank" class="spotify-song-link">
               ${song}
             </a>
             <div>${artist}</div>
+            <div style="margin-top:8px;">
+              <div style="background:#222; border-radius:4px; height:8px; width:180px; position:relative;">
+                <div style="background:#00c6ff; height:8px; border-radius:4px; width:${Math.round(data.progress_ms/data.item.duration_ms*180)}px;"></div>
+              </div>
+              <div style="font-size:0.9em; color:#aaa; margin-top:2px;">
+                Zbývá ${(Math.ceil((data.item.duration_ms-data.progress_ms)/1000))} s
+              </div>
+            </div>
           </div>
         </div>
       `;
