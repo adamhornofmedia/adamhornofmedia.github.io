@@ -447,25 +447,20 @@ setInterval(() => {
     const min = Math.floor(remainingMs / 60000);
     const sec = String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, '0');
 
-    // Potřebujeme durationMs a img/link/song/artist z posledního volání, proto si je uložíme do closure
-    // Nejjednodušší je volat loadNowPlaying() při nové písni, jinak si data musíš uložit do proměnných
+    const durationMs = lastSongData.durationMs;
+    const playedMs = durationMs - remainingMs;
+    const progressWidth = Math.round(playedMs / durationMs * 180);
+
+    // Najdi progress bar a čas podle třídy
+    const progressBar = widget.querySelector('.spotify-progress');
+    if (progressBar) progressBar.style.width = `${progressWidth}px`;
+    const timeDiv = widget.querySelector('.spotify-remaining');
+    if (timeDiv) timeDiv.textContent = `Zbývá ${min}:${sec} min`;
 
     // Pokud skladba doběhla, načti znovu z API
     if (remainingMs === 0) {
       loadNowPlaying();
-      return;
     }
-
-    // Vypočítej progress bar
-    const durationMs = trackEndTimestamp - (Date.now() - (trackEndTimestamp - Date.now()));
-    const playedMs = (trackEndTimestamp - Date.now()) > 0 ? (Date.now() + (durationMs - (trackEndTimestamp - Date.now()))) - (trackEndTimestamp - durationMs) : durationMs;
-    const progressWidth = Math.round((durationMs - remainingMs) / durationMs * 180);
-
-    // Najdi aktuální HTML a uprav progress bar + čas
-    const progressBar = widget.querySelector('div[style*="background:#00c6ff"]');
-    if (progressBar) progressBar.style.width = `${progressWidth}px`;
-    const timeDiv = widget.querySelector('div[style*="font-size:0.9em"]');
-    if (timeDiv) timeDiv.textContent = `Zbývá ${min}:${sec} min`;
   } else {
     // Pokud není skladba, načti z API
     loadNowPlaying();
