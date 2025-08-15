@@ -380,7 +380,12 @@ async function loadNowPlaying() {
   const widget = document.getElementById("spotify-widget");
 
   if (!data || !data.item) {
-    widget.innerHTML = "Nic nehraje";
+    widget.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;">
+      <img src="/icons/spotify.svg" alt="Spotify" style="width:48px;height:48px;">
+      <div style="color:#aaa;">Aktuálně nic neposlouchám</div>
+    </div>
+  `;
     lastTrackId = null;
     trackEndTimestamp = null;
     lastSongData = null;
