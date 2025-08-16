@@ -537,13 +537,11 @@
         const bookUrlMatch = desc.match(/<a href="([^"]+)"[^>]*>/i);
         if (bookUrlMatch) bookUrl = bookUrlMatch[1];
 
-        // Odkaz na autora (vyparsuj z "author:" a vygeneruj Goodreads search)
+        // Vyparsuj autora z description
         let author = "";
-        let authorUrl = "#";
         const authorMatch = desc.match(/author:\s*([^<\n\r]+)/i);
         if (authorMatch) {
           author = authorMatch[1].trim();
-          authorUrl = `https://www.goodreads.com/search?q=${encodeURIComponent(author)}&search_type=authors`;
         }
 
         // Obálka knihy
@@ -559,9 +557,7 @@
             <img src="${cover}" alt="${title}" style="width:48px;height:70px;object-fit:cover;border-radius:6px;">
             <div>
               <a href="${bookUrl}" target="_blank" style="color:#00c6ff;font-weight:600;text-decoration:none;">${title}</a>
-              <div style="color:#aaa;font-size:0.95em;">
-                <a href="${authorUrl}" target="_blank" style="color:#aaa;text-decoration:underline;">${author}</a>
-              </div>
+              <div style="color:#aaa;font-size:0.95em;">${author}</div>
             </div>
           </div>
         `;
