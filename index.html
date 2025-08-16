@@ -211,7 +211,7 @@
       Baví mě ecommerce, technologie a čistý webový design.
     </p>
     <h2 style="margin-top:2rem;">Právě poslouchám</h2>
-    <div id="spotify-widget">Načítám...</div>
+    <div id="spotify-widget"></div>
   </section>
   <section id="stack" class="fade-in">
     <h2>Používám</h2>
@@ -294,6 +294,10 @@
     </div>
     -->
   </section>
+  <section id="prave-ctu" class="fade-in">
+  <h2>Právě čtu</h2>
+  <div id="goodreads-widget">Načítám...</div>
+</section>
   <section id="kontakt" class="fade-in">
     <h2>Kontakt</h2>
     <p>Rád si popovídám o spolupráci, nápadech i projektech. Ozvi se mi 👇</p>
@@ -495,6 +499,37 @@
       }
     }
   }, 1000);
+
+  async function loadCurrentlyReading() {
+    const url = "https://api.rss2json.com/v1/api.json?rss_url=https://rss.app/feeds/D69HpLRJSYFaOcOQ.xml";
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const widget = document.getElementById("goodreads-widget");
+    if (!data.items || data.items.length === 0) {
+      widget.innerHTML = "Momentálně nečtu žádnou knihu.";
+      return;
+    }
+
+    widget.innerHTML = data.items.map(item => {
+      // Vždy vyparsuj autora z description
+      let author = '';
+      if (item.description) {
+        const match = item.description.match(/author:\s*([^<\n\r]+)/i);
+        if (match) author = match[1].trim();
+      }
+      return `
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;">
+          <img src="${item.enclosure ? item.enclosure.link : ''}" alt="${item.title}" style="width:48px;height:70px;object-fit:cover;border-radius:6px;">
+          <div>
+            <a href="${item.link}" target="_blank" style="color:#00c6ff;font-weight:600;text-decoration:none;">${item.title}</a>
+            <div style="color:#aaa;font-size:0.95em;">${author}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+  loadCurrentlyReading();
   </script>
 </body>
 </html>
