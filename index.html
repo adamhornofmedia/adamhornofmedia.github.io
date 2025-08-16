@@ -386,9 +386,9 @@
 
     if (!data || !data.item) {
       widget.innerHTML = `
-        <div style="display:flex;align-items:center;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;justify-content:center;">
           <img src="/icons/spotify.svg" alt="Spotify" style="width:48px;height:48px;">
-          <div style="color:#aaa;">Aktuálně nic neposlouchám</div>
+          <div style="color:#aaa; font-size:1.1em;">Právě nic neposlouchám</div>
         </div>
       `;
       lastTrackId = null;
