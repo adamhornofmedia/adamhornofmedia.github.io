@@ -501,35 +501,63 @@
   }, 1000);
 
   async function loadCurrentlyReading() {
-    const url = "https://api.rss2json.com/v1/api.json?rss_url=https://rss.app/feeds/D69HpLRJSYFaOcOQ.xml";
-    const res = await fetch(url);
-    const data = await res.json();
+    const url = "https://adamhornofmedia-github-io.vercel.app/api/goodreads"; // tvůj Vercel endpoint
+    try {
+      const res = await fetch(url);
+      const xml = await res.text();
 
-    const widget = document.getElementById("goodreads-widget");
-    if (!data.items || data.items.length === 0) {
-      widget.innerHTML = "Momentálně nečtu žádnou knihu.";
-      return;
-    }
+      // Parse XML
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(xml, "application/xml");
+      const items = Array.from(doc.querySelectorAll("item"));
 
-    widget.innerHTML = data.items.map(item => {
-      // Vždy vyparsuj autora z description
-      let author = '';
-      if (item.description) {
-        const match = item.description.match(/author:\s*([^<\n\r]+)/i);
-        if (match) author = match[1].trim();
+      const widget = document.getElementById("goodreads-widget");
+      if (items.length === 0) {
+        widget.innerHTML = "Momentálně nečtu žádnou knihu.";
+        return;
       }
-      return `
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;">
-          <img src="${item.enclosure ? item.enclosure.link : ''}" alt="${item.title}" style="width:48px;height:70px;object-fit:cover;border-radius:6px;">
-          <div>
-            <a href="${item.link}" target="_blank" style="color:#00c6ff;font-weight:600;text-decoration:none;">${item.title}</a>
-            <div style="color:#aaa;font-size:0.95em;">${author}</div>
+
+      // Filtrovat knihy, které mají v <description> "read at:" prázdné
+      const currentlyReading = items.filter(item => {
+        const desc = item.querySelector("description")?.textContent || "";
+        const readAtMatch = desc.match(/read at:\s*([^<\n\r]*)/i);
+        return readAtMatch && readAtMatch[1].trim() === "";
+      });
+
+      if (currentlyReading.length === 0) {
+        widget.innerHTML = "Momentálně nečtu žádnou knihu.";
+        return;
+      }
+
+      widget.innerHTML = currentlyReading.map(item => {
+        const desc = item.querySelector("description")?.textContent || "";
+        // Vyparsuj autora
+        let author = "";
+        const authorMatch = desc.match(/author:\s*([^<\n\r]+)/i);
+        if (authorMatch) author = authorMatch[1].trim();
+        // Vyparsuj obálku knihy
+        let cover = "";
+        const imgMatch = desc.match(/<img[^>]+src="([^"]+)"[^>]*>/i);
+        if (imgMatch) cover = imgMatch[1];
+        // Název knihy
+        const title = item.querySelector("title")?.textContent || "";
+        // Odkaz na knihu
+        const link = item.querySelector("link")?.textContent || "#";
+        return `
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;">
+            <img src="${cover}" alt="${title}" style="width:48px;height:70px;object-fit:cover;border-radius:6px;">
+            <div>
+              <a href="${link}" target="_blank" style="color:#00c6ff;font-weight:600;text-decoration:none;">${title}</a>
+              <div style="color:#aaa;font-size:0.95em;">${author}</div>
+            </div>
           </div>
-        </div>
-      `;
-    }).join('');
+        `;
+      }).join('');
+    } catch (e) {
+      document.getElementById("goodreads-widget").innerHTML = "Nelze načíst knihy.";
+    }
   }
   loadCurrentlyReading();
-  </script>
+</script>
 </body>
 </html>
