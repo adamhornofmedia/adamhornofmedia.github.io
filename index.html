@@ -6,334 +6,388 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Adam Hornof</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <!-- Odebrán League Spartan font -->
   <style>
-    .fade-in {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    :root {
+      --primary: #00c6ff;
+      --secondary: #0072ff;
+      --bg: #10131a;
+      --card: #181c24;
+      --accent: #fff;
+      --muted: #aaa;
+      --radius: 1.5rem;
     }
-    .fade-in.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #0f0f0f;
-      color: #fff;
-      line-height: 1.6;
+      font-family: 'Inter', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--accent);
+      min-height: 100vh;
+      line-height: 1.7;
+      letter-spacing: 0.01em;
     }
     header {
-      padding: 4rem 2rem;
+      background: linear-gradient(120deg, var(--primary), var(--secondary));
+      padding: 3rem 2rem 2rem 2rem;
       text-align: center;
-      background: linear-gradient(270deg, #00c6ff, #0072ff, #00c6ff);
-      background-size: 600% 100%;
-      animation: gradientShift 15s ease-in-out infinite alternate;
-    }
-    @keyframes gradientShift {
-      0% {
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
-      }
-      100% {
-        background-position: 0% 50%;
-      }
+      border-bottom-left-radius: var(--radius);
+      border-bottom-right-radius: var(--radius);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      position: relative;
+      z-index: 2;
     }
     header h1 {
-      font-size: 3rem;
+      font-size: 3.2rem;
       font-weight: 800;
-      font-family: 'Inter', Arial, sans-serif; /* změněno zpět na Inter */
-      letter-spacing: 1px;
+      letter-spacing: 2px;
+      margin-bottom: 0.5rem;
+      color: #fff;
+      text-shadow: 0 2px 12px #0072ff55;
     }
     header p {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       color: #e0f7ff;
-      margin-top: 0.5rem;
-    }
-    /* nav style moved to HTML inline style */
-    nav a {
-      color: #00c6ff;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    section {
-      max-width: 800px;
-      margin: 3rem auto;
-      padding: 0 2rem;
-    }
-    section h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      border-bottom: 2px solid #00c6ff;
-      display: inline-block;
-      padding-bottom: 0.3rem;
-      font-family: 'Inter', Arial, sans-serif; /* změněno zpět na Inter */
-      font-weight: 800;
-      letter-spacing: 0.5px;
-    }
-    .project {
-      background: #1a1a1a;
-      padding: 1rem;
-      border-radius: 0.75rem;
       margin-bottom: 1.5rem;
     }
-    .project h3 {
-      font-size: 1.3rem;
-      color: #00c6ff;
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      background: var(--card);
+      padding: 1.2rem 0;
+      border-radius: 0 0 var(--radius) var(--radius);
+      box-shadow: 0 2px 12px #0002;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    footer {
-      text-align: center;
-      padding: 2rem;
-      background-color: #121212;
-      color: #aaa;
-      font-size: 0.9rem;
-    }
-    a.button {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: 0.6rem 1.2rem;
-      background: #00c6ff;
-      color: #000;
-      border-radius: 0.5rem;
+    nav a {
+      color: var(--primary);
       font-weight: 600;
+      font-size: 1.1rem;
       text-decoration: none;
-      transition: background 0.3s ease;
+      padding: 0.3rem 1rem;
+      border-radius: 0.5rem;
+      transition: background 0.2s, color 0.2s;
     }
-    a.button:hover {
-      background: #0072ff;
-      color: #fff;
+    nav a:hover {
+      background: var(--primary);
+      color: #10131a;
     }
-    ul {
-      padding-left: 1.5rem;
-      list-style-type: disc;
+    main {
+      max-width: 900px;
+      margin: 3rem auto 2rem auto;
+      padding: 0 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
     }
-    
-    li {
+    section {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: 0 2px 24px #0003;
+      padding: 2.5rem 2rem;
+      margin-bottom: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    section h2 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 1.2rem;
+      letter-spacing: 1px;
+      border-bottom: 2px solid var(--primary);
+      display: inline-block;
+      padding-bottom: 0.3rem;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      margin-bottom: 2rem;
+    }
+    .profile img {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 24px #00c6ff33;
+      border: 4px solid var(--primary);
+      background: #fff;
+    }
+    .profile-info {
+      flex: 1;
+    }
+    .project-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+    .project {
+      background: #23283a;
+      border-radius: 1rem;
+      box-shadow: 0 2px 16px #0072ff22;
+      padding: 1.5rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      transition: transform 0.2s;
+    }
+    .project:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 6px 32px #00c6ff44;
+    }
+    .project h3 {
+      color: var(--primary);
+      font-size: 1.3rem;
+      font-weight: 700;
       margin-bottom: 0.5rem;
     }
-
-#kontakt a {
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-#kontakt a:hover {
-  color: #66d9ff !important;
-  text-decoration: underline !important;
-  cursor: pointer;
-}
+    .project ul {
+      padding-left: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+    .project li {
+      margin-bottom: 0.3rem;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    .project a.button {
+      margin-top: 0.5rem;
+      margin-right: 0.7rem;
+      background: var(--primary);
+      color: #10131a;
+      font-weight: 600;
+      border-radius: 0.5rem;
+      padding: 0.5rem 1.2rem;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+      display: inline-block;
+      font-size: 1rem;
+    }
+    .project a.button:hover {
+      background: var(--secondary);
+      color: #fff;
+    }
     .tool-icons {
       display: flex;
       flex-wrap: wrap;
-      gap: 2rem;
+      gap: 2.5rem;
       justify-content: center;
-      margin-top: 1.5rem;
-      text-align: center;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
     }
     .tool-icons div {
       flex: 1 1 120px;
       max-width: 140px;
+      text-align: center;
     }
     .tool-icons img {
-      width: 48px;
-      height: 48px;
-      margin-bottom: 0.5rem;
+      width: 56px;
+      height: 56px;
+      margin-bottom: 0.7rem;
+      filter: drop-shadow(0 2px 8px #00c6ff33);
+      transition: transform 0.2s;
     }
-    .bigger-icon {
-      width: 160px;
-      height: 160px;
+    .tool-icons img:hover {
+      transform: scale(1.18);
     }
-  .tool-icons img:hover {
-    transform: scale(1.2);
-    transition: transform 0.3s ease;
-  }
-  .kontakt-icons {
-  display: flex;
-  gap: 2rem;
-  justify-content: center;
-  align-items: center;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
-}
-.kontakt-icons a img {
-  transition: transform 0.2s;
-  border-radius: 8px;
-  background: #222;
-  padding: 6px;
-}
-.kontakt-icons a:hover img {
-  transform: scale(1.2);
-  background: #00c6ff;
-}
-.spotify-song-link {
-    font-weight: bold;
-    color: white;
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .spotify-song-link:hover {
-    color: #00c6ff;
-    text-decoration: underline;
-  }
+    .kontakt-icons {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      align-items: center;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .kontakt-icons a img {
+      transition: transform 0.2s;
+      border-radius: 8px;
+      background: #222;
+      padding: 6px;
+      width: 40px;
+      height: 40px;
+    }
+    .kontakt-icons a:hover img {
+      transform: scale(1.2);
+      background: var(--primary);
+    }
+    .spotify-song-link {
+      font-weight: bold;
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .spotify-song-link:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    .goodreads-widget {
+      margin-top: 1.5rem;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: #181c24;
+      color: var(--muted);
+      font-size: 1rem;
+      border-top-left-radius: var(--radius);
+      border-top-right-radius: var(--radius);
+      margin-top: 3rem;
+      box-shadow: 0 -2px 24px #0002;
+    }
+    @media (max-width: 700px) {
+      main { padding: 0 0.5rem; }
+      section { padding: 1.2rem 0.7rem; }
+      .profile { flex-direction: column; gap: 1.2rem; }
+      .profile img { width: 100px; height: 100px; }
+      .tool-icons { gap: 1.2rem; }
+      .kontakt-icons { gap: 1rem; }
+      .project-list { grid-template-columns: 1fr; }
+    }
   </style>
-<!-- Google Analytics bez cookies -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XGECGL3ETS"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XGECGL3ETS', {
-    'anonymize_ip': true,
-    'storage': 'none',
-    'allow_google_signals': false,
-    'allow_ad_personalization_signals': false
-  });
-</script>
 </head>
 <body>
   <header>
     <h1>Adam Hornof</h1>
     <p>Student • Tvůrce • Geek • Ecommerce • Weby</p>
   </header>
-  <nav style="display: flex; justify-content: center; gap: 2rem; padding: 1rem; background-color: #121212;">
+  <nav>
     <a href="#o-mne">O mně</a>
     <a href="#projekty">Projekty</a>
+    <a href="#stack">Stack</a>
+    <a href="#prave-ctu">Právě čtu</a>
     <a href="#kontakt">Kontakt</a>
   </nav>
-  <section id="o-mne" class="fade-in">
-    <h2>O mně</h2>
-    <div style="display:flex;align-items:center;gap:2rem;margin-bottom:2rem;">
-      <img src="/me.png" alt="Adam Hornof" style="width:120px;height:120px;border-radius:50%;object-fit:cover;box-shadow:0 2px 12px #000;">
-      <p>
-        Jsem Adam Hornof – <span id="age"></span>letý student a tvůrce webů, který se nebojí zkoušet nové věci.
-        Věnuji se projektům, které mají smysl, od technické podpory neziskovek až po vlastní e-shopy.
-        Baví mě ecommerce, technologie a čistý webový design.
-      </p>
-    </div>
-    <h2 style="margin-top:2rem;">Právě poslouchám</h2>
-    <div id="spotify-widget"></div>
-  </section>
-  <section id="stack" class="fade-in">
-    <h2>Používám</h2>
-    <div class="tool-icons">
-      <div>
-        <img src="/icons/wordpress.svg" alt="WordPress">
-        <p>WordPress</p>
+  <main>
+    <section id="o-mne">
+      <h2>O mně</h2>
+      <div class="profile">
+        <img src="/me.png" alt="Adam Hornof">
+        <div class="profile-info">
+          <p>
+            Jsem Adam Hornof – <span id="age"></span>letý student a tvůrce webů, který se nebojí zkoušet nové věci.<br>
+            Věnuji se projektům, které mají smysl, od technické podpory neziskovek až po vlastní e-shopy.<br>
+            Baví mě ecommerce, technologie a čistý webový design.
+          </p>
+        </div>
       </div>
-      <div>
-        <img src="icons/woocommerce.svg" alt="WooCommerce" class="bigger-icon">
-        <p>WooCommerce</p>
+      <h2 style="margin-top:2rem;">Právě poslouchám</h2>
+      <div id="spotify-widget"></div>
+    </section>
+    <section id="projekty">
+      <h2>Projekty</h2>
+      <div class="project-list">
+        <div class="project">
+          <h3>QR Darovací Formulář</h3>
+          <p>WordPress plugin pro neziskovky a projekty, které chtějí přijímat příspěvky pomocí QR platby. Umožňuje víc účtů, vlastní poznámky a je extrémně jednoduchý pro BFU.</p>
+          <ul>
+            <li>✅ Podpora více účtů a poznámek</li>
+            <li>✅ Generuje QR kód přes Paylibo API</li>
+            <li>✅ Proměnná <code>{{jmeno}}</code> v poznámce pro příjemce</li>
+            <li>✅ Uživatelsky přívětivá administrace</li>
+          </ul>
+          <a class="button" href="https://github.com/adamhornofmedia/QR-Darovaci-Formular/tree/main">Zobrazit na GitHubu</a>
+          <a class="button" href="https://stastny-usmev.cz/sponzorstvi-a-dary/">Plugin na webu Šťastný úsměv, z.s.</a>
+        </div>
+        <div class="project">
+          <h3>TechMerch.cz</h3>
+          <p>E-shop s technologicky laděnými tričky.</p>
+          <a class="button" href="https://techmerch.cz" target="_blank">Zobrazit</a>
+        </div>
+        <div class="project">
+          <h3>Šťastný úsměv, z.s.</h3>
+          <p>Pro neziskovou organizaci Šťastný úsměv, z.s. zajišťuji kompletní technickou správu – od běžné údržby webu na WordPressu až po podporu Google Workspace (e-maily, Drive, Kalendář). Pomáhám jim soustředit se na jejich činnost tím, že se starám o technické zázemí.</p>
+          <ul>
+            <li>✅ Nakladatelská činnost - řeším vydávání knih spolku</li>
+            <li>✅ Správa WordPress webu (aktualizace, úpravy obsahu, zálohování)</li>
+            <li>✅ Google Workspace – účty, DNS, e-mailová doména</li>
+          </ul>
+          <a class="button" href="https://stastny-usmev.cz/?adamhornof.cz" target="_blank">Zobrazit</a>
+        </div>
+        <div class="project">
+          <h3>CovidPřehled.cz</h3>
+          <p>Jednoduchý web, který během pandemie přehledně zobrazoval statistiky o COVID-19 v Česku. Nabízel upozornění na opatření přímo do telefonu a generátor čestného prohlášení pro přechod mezi okresy.</p>
+          <ul>
+            <li>✅ Sběr a aktualizace dat (MZČR a další otevřené zdroje)</li>
+            <li>✅ Přehledné statistiky, upozornění a generátor pro uživatele</li>
+            <li>✅ Responsivní design a jednoduché ovládání</li>
+          </ul>
+          <p>🗓️ Projekt běžel během let 2020–2022.</p>
+        </div>
+        <div class="project">
+          <h3>XQE.cz – Technologický blog</h3>
+          <p>Osobní blog o technologiích, digitální produktivitě a nástrojích.</p>
+          <a class="button" href="https://xqe.cz/?adamhornof.cz" target="_blank">Zobrazit</a>
+        </div>
       </div>
-      <div>
-        <img src="icons/analytics.svg" alt="Google Analytics">
-        <p>Google Analytics</p>
+    </section>
+    <section id="stack">
+      <h2>Používám</h2>
+      <div class="tool-icons">
+        <div>
+          <img src="/icons/wordpress.svg" alt="WordPress">
+          <p>WordPress</p>
+        </div>
+        <div>
+          <img src="/icons/woocommerce.svg" alt="WooCommerce">
+          <p>WooCommerce</p>
+        </div>
+        <div>
+          <img src="/icons/analytics.svg" alt="Google Analytics">
+          <p>Google Analytics</p>
+        </div>
+        <div>
+          <img src="/icons/workspace.svg" alt="Google Workspace">
+          <p>Google Workspace</p>
+        </div>
+        <div>
+          <img src="/icons/figma.svg" alt="Figma">
+          <p>Figma</p>
+        </div>
       </div>
-      <div>
-        <img src="icons/workspace.svg" alt="Google Workspace" class="bigger-icon">
-        <p>Google Workspace</p>
+    </section>
+    <section id="prave-ctu">
+      <h2>Právě čtu</h2>
+      <div id="goodreads-widget" class="goodreads-widget">Načítám...</div>
+    </section>
+    <section id="kontakt">
+      <h2>Kontakt</h2>
+      <p>Rád si popovídám o spolupráci, nápadech i projektech. Ozvi se mi 👇</p>
+      <div class="kontakt-icons">
+        <a href="mailto:jsem@adamhornof.cz" title="Email" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/email.svg" alt="Email" />
+        </a>
+        <a href="https://www.linkedin.com/in/adamhornof/" title="LinkedIn" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/linkedin.svg" alt="LinkedIn" />
+        </a>
+        <a href="https://github.com/adamhornofmedia" title="GitHub" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/github.svg" alt="GitHub" />
+        </a>
+        <a href="https://www.printables.com/@adamhornof" title="Printables" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/printables-logo.svg" alt="Printables" />
+        </a>
+        <a href="https://kinobox.cz/uzivatele/209445" title="Kinobox" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/kinobox.svg" alt="Kinobox" />
+        </a>
+        <a href="https://www.goodreads.com/nejsemzpardubic" title="Goodreads" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/goodreads.svg" alt="Goodreads" />
+        </a>
+        <a href="https://m.me/adamhornof" title="Messenger" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/messenger.svg" alt="Messenger" />
+        </a>
+        <a href="https://discord.com/users/417027300023074864" title="Discord" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/discord.svg" alt="Discord" />
+        </a>
       </div>
-      <div>
-        <img src="icons/figma.svg" alt="Figma">
-        <p>Figma</p>
+      <div style="margin-top: 1rem; text-align: center;">
+        <a href="mailto:jsem@adamhornof.cz" style="color: #00c6ff; font-weight: 600;">jsem@adamhornof.cz</a>
       </div>
-    </div>
-  </section>
-  <section id="projekty" class="fade-in">
-    <h2>Projekty</h2>
-      <div class="project">
-        <h3>QR Darovací Formulář</h3>
-        <p>WordPress plugin pro neziskovky a projekty, které chtějí přijímat příspěvky pomocí QR platby. Umožňuje víc účtů, vlastní poznámky a je extrémně jednoduchý pro BFU.</p>
-       <ul>
-        <li>✅ Podpora více účtů a poznámek</li>
-        <li>✅ Generuje QR kód přes Paylibo API</li>
-        <li>✅ Proměnná <code>{{jmeno}}</code> v poznámce pro příjemce</li>
-        <li>✅ Uživatelsky přívětivá administrace</li>
-      </ul>
-  <a class="button" href="https://github.com/adamhornofmedia/QR-Darovaci-Formular/tree/main">Zobrazit na GitHubu</a>
-  <a class="button" href="https://stastny-usmev.cz/sponzorstvi-a-dary/">Plugin na webu Šťastný úsměv, z.s.</a>
-</div>
-    <div class="project">
-      <h3>TechMerch.cz</h3>
-      <p>E-shop s technologicky laděnými tričky.</p>
-      <a class="button" href="https://techmerch.cz" target="_blank">Zobrazit</a>
-    </div>
-    <div class="project">
-      <h3>Šťastný úsměv, z.s.</h3>
-      <p>Pro neziskovou organizaci Šťastný úsměv, z.s. zajišťuji kompletní technickou správu – od běžné údržby webu na WordPressu až po podporu Google Workspace (e-maily, Drive, Kalendář). Pomáhám jim soustředit se na jejich činnost tím, že se starám o technické zázemí.</p>
-      <ul>
-        <li>✅ Nakladatelská činnost - řeším vydávání knih spolku</li>
-        <li>✅ Správa WordPress webu (aktualizace, úpravy obsahu, zálohování)</li>
-        <li>✅ Google Workspace – účty, DNS, e-mailová doména</li>
-      </ul>
-      <a class="button" href="https://stastny-usmev.cz/?adamhornof.cz" target="_blank">Zobrazit</a>
-    </div>
-    <div class="project">
-      <h3>CovidPřehled.cz</h3>
-      <p>Jednoduchý web, který během pandemie přehledně zobrazoval statistiky o COVID-19 v Česku. Nabízel upozornění na opatření přímo do telefonu a generátor čestného prohlášení pro přechod mezi okresy. Díky projektu jsem měl možnost osobně komunikovat s tehdejší předsedkyní PSP, Markétou Pekarovou Adamovou.</p>
-      <ul>
-        <li>✅ Sběr a aktualizace dat (MZČR a další otevřené zdroje)</li>
-        <li>✅ Přehledné statistiky, upozornění a generátor pro uživatele</li>
-        <li>✅ Responsivní design a jednoduché ovládání</li>
-      </ul>
-      <p>🗓️ Projekt běžel během let 2020–2022.</p>
-    </div>
-    <div class="project">
-      <h3>XQE.cz – Technologický blog</h3>
-      <p>Osobní blog o technologiích, digitální produktivitě a nástrojích.</p>
-      <a class="button" href="https://xqe.cz/?adamhornof.cz" target="_blank">Zobrazit</a>
-    </div>
-    <!--
-    <div class="project">
-      <h3>GameSkill.eu – Herní klíče</h3>
-      <p>Projektem GameSkill.eu zkouším prodej herních klíčů a bonusového obsahu. Stránka je jednoduchá, rychlá a zaměřená čistě na to, co hráče zajímá.</p>
-      <ul>
-        <li>✅ Přehledné UX a rychlý nákup</li>
-        <li>✅ Zaměřeno na srozumitelnost bez zbytečných efektů</li>
-      </ul>
-      <a class="button" href="https://gameskill.eu?adamhornof.cz" target="_blank">Zobrazit</a>
-    </div>
-    -->
-  </section>
-  <section id="prave-ctu" class="fade-in">
-  <h2>Právě čtu</h2>
-  <div id="goodreads-widget">Načítám...</div>
-</section>
-  <section id="kontakt" class="fade-in">
-    <h2>Kontakt</h2>
-    <p>Rád si popovídám o spolupráci, nápadech i projektech. Ozvi se mi 👇</p>
-    <div class="kontakt-icons">
-      <a href="mailto:jsem@adamhornof.cz" title="Email" target="_blank" rel="noopener noreferrer">
-        <img src="/icons/email.svg" alt="Email" width="32" height="32" />
-      </a>
-      <a href="https://www.linkedin.com/in/adamhornof/" title="LinkedIn" target="_blank" rel="noopener noreferrer">
-        <img src="/icons/linkedin.svg" alt="LinkedIn" width="32" height="32" />
-      </a>
-      <a href="https://github.com/adamhornofmedia" title="GitHub" target="_blank" rel="noopener noreferrer">
-        <img src="/icons/github.svg" alt="GitHub" width="32" height="32" />
-      </a>
-      <a href="https://www.printables.com/@adamhornof" title="Printables" target="_blank" rel="noopener noreferrer">
-        <img src="/icons/printables-logo.svg" alt="Printables" width="32" height="32" />
-      </a>
-      <a href="https://kinobox.cz/uzivatele/209445" title="Kinobox" target="_blank" rel="noopener noreferrer">
-        <img src="/icons/kinobox.svg" alt="Kinobox" width="32" height="32" />
-      </a>
-      <a href="https://www.goodreads.com/nejsemzpardubic" title="Goodreads" target="_blank" rel="noopener noreferrer">
-        <img src="/icons/goodreads.svg" alt="Goodreads" width="32" height="32" />
-      </a>
-      <a href="https://m.me/adamhornof" title="Messenger" target="_blank" rel="noopener noreferrer">
-        <img src="/icons/messenger.svg" alt="Messenger" width="32" height="32" />
-      </a>
-      <a href="https://discord.com/users/417027300023074864" title="Discord" target="_blank" rel="noopener noreferrer">
-        <img src="/icons/discord.svg" alt="Discord" width="32" height="32" />
-      </a>
-    </div>
-    <div style="margin-top: 1rem; text-align: center;">
-      <a href="mailto:jsem@adamhornof.cz" style="color: #00c6ff; font-weight: 600;">jsem@adamhornof.cz</a>
-    </div>
-  </section>
+    </section>
+  </main>
   <footer>
     &copy; <span id="currentYear"></span> Adam Hornof. Všechna práva vyhrazena.<br>
     IČO: 23294566<br>
@@ -353,30 +407,7 @@
       }
       return age;
     }
-
     document.getElementById('age').textContent = calculateAge('2005-10-25');
-
-
-    // Fade-in animace při scrollování
-    const faders = document.querySelectorAll('.fade-in');
-
-    const appearOnScroll = new IntersectionObserver(
-      (entries, observer) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        threshold: 0.1
-      }
-    );
-
-    faders.forEach(fader => {
-      appearOnScroll.observe(fader);
-    });
 
     // Spotify widget
     let lastTrackId = null;
@@ -586,6 +617,6 @@
     }
   }
   loadCurrentlyReading();
-</script>
+  </script>
 </body>
 </html>
