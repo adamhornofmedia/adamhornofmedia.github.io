@@ -261,6 +261,94 @@
         margin: 0.2rem 0;
       }
     }
+
+    /* Retro mód */
+    body.retro {
+      font-family: "Courier New", Courier, monospace !important;
+      background: #f5deb3 !important;
+      color: #222 !important;
+      letter-spacing: 0;
+    }
+    body.retro header,
+    body.retro nav,
+    body.retro section,
+    body.retro footer {
+      background: #e0c97a !important;
+      color: #222 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      border: 2px solid #222 !important;
+    }
+    body.retro header h1,
+    body.retro section h2 {
+      color: #222 !important;
+      background: none !important;
+      -webkit-text-fill-color: unset !important;
+      text-shadow: none !important;
+      border-bottom: 2px dashed #222 !important;
+      font-family: "Courier New", Courier, monospace !important;
+    }
+    body.retro nav a {
+      color: #222 !important;
+      background: #f5deb3 !important;
+      border: 1px solid #222 !important;
+      font-family: "Courier New", Courier, monospace !important;
+    }
+    body.retro nav a:hover {
+      background: #e0c97a !important;
+      color: #222 !important;
+    }
+    body.retro .project,
+    body.retro .tool-icons div,
+    body.retro .kontakt-icons a img {
+      background: #f5deb3 !important;
+      color: #222 !important;
+      border: 1px solid #222 !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+    }
+    body.retro .project h3 {
+      color: #222 !important;
+      font-family: "Courier New", Courier, monospace !important;
+      border-bottom: 1px dashed #222 !important;
+    }
+    body.retro .button {
+      background: #e0c97a !important;
+      color: #222 !important;
+      border: 1px solid #222 !important;
+      font-family: "Courier New", Courier, monospace !important;
+    }
+    body.retro .button:hover {
+      background: #f5deb3 !important;
+      color: #222 !important;
+    }
+    body.retro img,
+    body.retro .profile img {
+      filter: grayscale(100%) contrast(1.2);
+      border-radius: 0 !important;
+      border: 2px solid #222 !important;
+      box-shadow: none !important;
+      background: #e0c97a !important;
+    }
+    body.retro a {
+      color: #222 !important;
+      text-decoration: underline !important;
+    }
+
+    #retro-buttons-top {
+      display: none;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+      margin: 2rem 0;
+    }
+    #retro-buttons-top img {
+      filter: none !important;
+      transition: filter 0.2s;
+    }
+    body.retro #retro-buttons-top img {
+      filter: none !important;
+    }
   </style>
 </head>
 <body>
@@ -291,6 +379,17 @@
       <h2 style="margin-top:2rem;">Právě poslouchám</h2>
       <div id="spotify-widget"></div>
     </section>
+
+    <!-- RETRO BUTTONS - BAREVNÉ, VŽDY VIDITELNÉ -->
+    <div id="retro-buttons-top" style="display:none;gap:12px;justify-content:center;align-items:center;margin:2rem 0;">
+      <a href="http://www.savewalterwhite.com/" target="_blank" rel="noopener noreferrer">
+        <img src="/buttons/savewalterwhite.gif" alt="retro button" class="retro-btn" style="height:28px;">
+      </a>
+      <img src="/buttons/coke.gif" alt="retro button" class="retro-btn" style="height:28px;">
+      <img src="/buttons/divasupport5.gif" alt="retro button" class="retro-btn" style="height:28px;">
+      <img src="/buttons/macosmade.gif" alt="retro button" class="retro-btn" style="height:28px;">
+    </div>
+
     <section id="projekty">
       <h2>Projekty</h2>
       <div style="margin-bottom:2rem;">
@@ -413,6 +512,13 @@
     &copy; <span id="currentYear"></span> Adam Hornof. Všechna práva vyhrazena.<br>
     IČO: 23294566<br>
     Sídlo: Nové sady 988/2, Brno, 602 00
+    <div style="margin-top:2rem;">
+      <label style="font-size:0.95em; color:#888; cursor:pointer;">
+        <input type="checkbox" id="retro-switch" style="vertical-align:middle; margin-right:6px;">
+        <span style="vertical-align:middle;">Retro mód</span>
+      </label>
+      <div id="retro-buttons" style="display:none; margin-top:1.2rem; gap:8px; justify-content:center; flex-wrap:wrap;"></div>
+    </div>
   </footer>
   <script>
     document.getElementById('currentYear').textContent = new Date().getFullYear();
@@ -653,6 +759,28 @@
         project.style.display = 'none';
       }
     });
+  });
+
+  // Retro mód
+  document.getElementById('retro-switch').addEventListener('change', function() {
+    if (this.checked) {
+      document.body.classList.add('retro');
+    } else {
+      document.body.classList.remove('retro');
+    }
+  });
+
+  // Retro mód + retro tlačítka nahoře
+  const retroSwitch = document.getElementById('retro-switch');
+  const retroButtonsTop = document.getElementById('retro-buttons-top');
+  retroSwitch.addEventListener('change', function() {
+    if (this.checked) {
+      document.body.classList.add('retro');
+      retroButtonsTop.style.display = "flex";
+    } else {
+      document.body.classList.remove('retro');
+      retroButtonsTop.style.display = "none";
+    }
   });
   </script>
 </body>
