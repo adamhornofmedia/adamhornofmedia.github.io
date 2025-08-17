@@ -247,13 +247,26 @@
       .tool-icons { gap: 1.2rem; }
       .kontakt-icons { gap: 1rem; }
       .project-list { grid-template-columns: 1fr; }
+      nav {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+        padding: 0.7rem 0;
+      }
+      nav a {
+        font-size: 1rem;
+        padding: 0.5rem 1.2rem;
+        width: 90vw;
+        text-align: center;
+        margin: 0.2rem 0;
+      }
     }
   </style>
 </head>
 <body>
   <header>
     <h1>Adam Hornof</h1>
-    <p>Student • Tvůrce • Geek • Ecommerce • Weby</p>
+    <p>Student • Tvůrce • Geek</p>
   </header>
   <nav>
     <a href="#o-mne">O mně</a>
@@ -280,8 +293,16 @@
     </section>
     <section id="projekty">
       <h2>Projekty</h2>
-      <div class="project-list">
-        <div class="project">
+      <div style="margin-bottom:2rem;">
+        <label for="project-tag-filter" style="font-weight:600;color:#00c6ff;margin-right:1rem;">Filtrovat podle štítku:</label>
+        <select id="project-tag-filter" style="padding:0.5rem 1rem;border-radius:0.7rem;border:none;background:#23283a;color:#fff;font-size:1.1rem;">
+          <option value="all">Vše</option>
+          <option value="wordpress">WordPress</option>
+          <option value="ecommerce">Ecommerce</option>
+        </select>
+      </div>
+      <div class="project-list" id="project-list">
+        <div class="project" data-tags="wordpress">
           <h3>QR Darovací Formulář</h3>
           <p>WordPress plugin pro neziskovky a projekty, které chtějí přijímat příspěvky pomocí QR platby. Umožňuje víc účtů, vlastní poznámky a je extrémně jednoduchý pro BFU.</p>
           <ul>
@@ -293,12 +314,12 @@
           <a class="button" href="https://github.com/adamhornofmedia/QR-Darovaci-Formular/tree/main">Zobrazit na GitHubu</a>
           <a class="button" href="https://stastny-usmev.cz/sponzorstvi-a-dary/">Plugin na webu Šťastný úsměv, z.s.</a>
         </div>
-        <div class="project">
+        <div class="project" data-tags="ecommerce">
           <h3>TechMerch.cz</h3>
           <p>E-shop s technologicky laděnými tričky.</p>
           <a class="button" href="https://techmerch.cz" target="_blank">Zobrazit</a>
         </div>
-        <div class="project">
+        <div class="project" data-tags="wordpress">
           <h3>Šťastný úsměv, z.s.</h3>
           <p>Pro neziskovou organizaci Šťastný úsměv, z.s. zajišťuji kompletní technickou správu – od běžné údržby webu na WordPressu až po podporu Google Workspace (e-maily, Drive, Kalendář). Pomáhám jim soustředit se na jejich činnost tím, že se starám o technické zázemí.</p>
           <ul>
@@ -308,7 +329,7 @@
           </ul>
           <a class="button" href="https://stastny-usmev.cz/?adamhornof.cz" target="_blank">Zobrazit</a>
         </div>
-        <div class="project">
+        <div class="project" data-tags="wordpress">
           <h3>CovidPřehled.cz</h3>
           <p>Jednoduchý web, který během pandemie přehledně zobrazoval statistiky o COVID-19 v Česku. Nabízel upozornění na opatření přímo do telefonu a generátor čestného prohlášení pro přechod mezi okresy.</p>
           <ul>
@@ -318,7 +339,7 @@
           </ul>
           <p>🗓️ Projekt běžel během let 2020–2022.</p>
         </div>
-        <div class="project">
+        <div class="project" data-tags="wordpress">
           <h3>XQE.cz – Technologický blog</h3>
           <p>Osobní blog o technologiích, digitální produktivitě a nástrojích.</p>
           <a class="button" href="https://xqe.cz/?adamhornof.cz" target="_blank">Zobrazit</a>
@@ -617,6 +638,22 @@
     }
   }
   loadCurrentlyReading();
+
+  // Filtr projektů podle štítků (jen aktuální tagy)
+  const tagFilter = document.getElementById('project-tag-filter');
+  const projectList = document.getElementById('project-list');
+  const allProjects = Array.from(projectList.children);
+
+  tagFilter.addEventListener('change', function() {
+    const tag = this.value;
+    allProjects.forEach(project => {
+      if (tag === 'all' || project.dataset.tags.includes(tag)) {
+        project.style.display = '';
+      } else {
+        project.style.display = 'none';
+      }
+    });
+  });
   </script>
 </body>
 </html>
