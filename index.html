@@ -369,6 +369,85 @@
       box-shadow: none !important;
       border-radius: 0 !important;
     }
+
+    /* Přidej do CSS retro Winamp styl pro sekci Právě poslouchám */
+    body.retro #spotify-widget {
+      background: #222 !important;
+      border: 2px solid #ffcc00 !important;
+      color: #fff !important;
+      font-family: "Tahoma", "Verdana", "Geneva", sans-serif !important;
+      border-radius: 0 !important;
+      box-shadow: 0 0 0 2px #000 !important;
+      padding: 12px 16px !important;
+      max-width: 420px;
+      margin: 0 auto;
+      position: relative;
+    }
+    body.retro #spotify-widget .winamp-title {
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #ffcc00;
+      background: #333;
+      padding: 4px 8px;
+      border: 1px solid #ffcc00;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+      font-family: "Tahoma", "Verdana", "Geneva", sans-serif !important;
+      text-shadow: 1px 1px 0 #000;
+      border-radius: 0;
+      display: inline-block;
+    }
+    body.retro #spotify-widget .winamp-bar {
+      background: linear-gradient(90deg, #ffcc00 60%, #333 100%);
+      height: 12px;
+      border: 1px solid #ffcc00;
+      margin: 10px 0 6px 0;
+      border-radius: 0;
+      position: relative;
+      width: 100%;
+      max-width: 320px;
+      box-shadow: 0 0 0 1px #000;
+    }
+    body.retro #spotify-widget .winamp-progress {
+      background: #00c6ff;
+      height: 12px;
+      border-radius: 0;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+    body.retro #spotify-widget .winamp-album {
+      width: 48px;
+      height: 48px;
+      border: 2px solid #ffcc00;
+      background: #333;
+      margin-right: 12px;
+      float: left;
+      box-shadow: 2px 2px 0 #000;
+    }
+    body.retro #spotify-widget .winamp-info {
+      margin-left: 60px;
+    }
+    body.retro #spotify-widget .winamp-artist {
+      color: #fff;
+      font-size: 1em;
+      margin-bottom: 2px;
+      font-family: "Tahoma", "Verdana", "Geneva", sans-serif !important;
+    }
+    body.retro #spotify-widget .winamp-time {
+      color: #ffcc00;
+      font-size: 0.95em;
+      font-family: "Tahoma", "Verdana", "Geneva", sans-serif !important;
+    }
+    body.retro #spotify-widget .winamp-paused {
+      color: #ffcc00;
+      font-size: 0.95em;
+      margin-top: 4px;
+      font-family: "Tahoma", "Verdana", "Geneva", sans-serif !important;
+    }
+    body.retro #spotify-widget .winamp-clear {
+      clear: both;
+    }
   </style>
 </head>
 <body>
