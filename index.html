@@ -251,14 +251,22 @@
         flex-direction: column;
         gap: 0.5rem;
         align-items: center;
-        padding: 0.7rem 0;
+        padding: 0.3rem 0;
+        border-radius: 0 0 1rem 1rem;
+        box-shadow: 0 1px 6px #0002;
+        font-size: 0.98rem;
+        position: static !important;
+        top: auto !important;
+        z-index: auto !important;
+        box-shadow: none;
       }
       nav a {
         font-size: 1rem;
-        padding: 0.5rem 1.2rem;
-        width: 90vw;
+        padding: 0.3rem 0.7rem;
+        width: auto;
         text-align: center;
-        margin: 0.2rem 0;
+        margin: 0.1rem 0;
+        border-radius: 0.4rem;
       }
     }
 
@@ -479,16 +487,6 @@
       <div id="spotify-widget"></div>
     </section>
 
-    <!-- RETRO BUTTONS - BAREVNÉ, VŽDY VIDITELNÉ -->
-    <div id="retro-buttons-top" style="display:none;gap:12px;justify-content:center;align-items:center;margin:2rem 0;">
-      <a href="http://www.savewalterwhite.com/" target="_blank" rel="noopener noreferrer">
-        <img src="/buttons/savewalterwhite.gif" alt="retro button" class="retro-btn" style="height:28px;">
-      </a>
-      <img src="/buttons/coke.gif" alt="retro button" class="retro-btn" style="height:28px;">
-      <img src="/buttons/divasupport5.gif" alt="retro button" class="retro-btn" style="height:28px;">
-      <img src="/buttons/macosmade.gif" alt="retro button" class="retro-btn" style="height:28px;">
-    </div>
-
     <section id="projekty">
       <h2>Projekty</h2>
       <div style="margin-bottom:2rem;">
@@ -574,15 +572,43 @@
       <div id="goodreads-widget" class="goodreads-widget">Načítám...</div>
     </section>
     <section id="kontakt">
-      <h2>Kde mě najdeš?</h2>
-      <p>Rád si popovídám o spolupráci, nápadech i projektech. Ozvi se mi 👇</p>
-      <div class="kontakt-icons">
+      <h2>Kontakt</h2>
+      <p>Chceš spolupracovat, máš dotaz nebo nápad? Napiš mi přímo:</p>
+      <div class="kontakt-icons" style="justify-content:center;">
         <a href="mailto:jsem@adamhornof.cz" title="Email" target="_blank" rel="noopener noreferrer">
           <img src="/icons/email.svg" alt="Email" />
         </a>
         <a href="https://www.linkedin.com/in/adamhornof/" title="LinkedIn" target="_blank" rel="noopener noreferrer">
           <img src="/icons/linkedin.svg" alt="LinkedIn" />
         </a>
+      </div>
+      <div style="margin-top: 1.2rem; text-align: center;">
+        <a href="mailto:jsem@adamhornof.cz"
+           style="
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.15rem;
+            text-decoration: none;
+            padding: 0.8rem 2rem;
+            border-radius: 0.7rem;
+            box-shadow: 0 2px 12px #00c6ff22;
+            display: inline-block;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+            border: none;
+            letter-spacing: 0.5px;
+           "
+           onmouseover="this.style.background='linear-gradient(90deg, var(--secondary), var(--primary))';this.style.color='#10131a';this.style.transform='scale(1.05)'"
+           onmouseout="this.style.background='linear-gradient(90deg, var(--primary), var(--secondary))';this.style.color='#fff';this.style.transform='scale(1)'"
+        >Napsat e-mail</a>
+        <div style="margin-top:0.7rem;font-size:1.08rem;color:#aaa;">
+          <span style="color:#00c6ff;font-weight:600;">jsem@adamhornof.cz</span>
+        </div>
+      </div>
+    </section>
+    <section id="social">
+      <h2>Kde mě najdeš?</h2>
+      <div class="kontakt-icons">
         <a href="https://github.com/adamhornofmedia" title="GitHub" target="_blank" rel="noopener noreferrer">
           <img src="/icons/github.svg" alt="GitHub" />
         </a>
@@ -604,13 +630,9 @@
         <a href="https://lounge.nintendo.com/friendcode/8132-0856-9509/C1dlq8BkPG" title="Nintendo Switch" target="_blank" rel="noopener noreferrer">
           <img src="/icons/switch.svg" alt="Nintendo Switch" />
         </a>
-        <!-- Steam ikona na závěr -->
         <a href="https://steamcommunity.com/id/nejsemzpardubic/" title="Steam" target="_blank" rel="noopener noreferrer">
           <img src="/icons/steam.svg" alt="Steam" />
         </a>
-      </div>
-      <div style="margin-top: 1rem; text-align: center;">
-        <a href="mailto:jsem@adamhornof.cz" style="color: #00c6ff; font-weight: 600;">jsem@adamhornof.cz</a>
       </div>
     </section>
   </main>
@@ -618,13 +640,6 @@
     &copy; <span id="currentYear"></span> Adam Hornof. Všechna práva vyhrazena.<br>
     IČO: 23294566<br>
     Sídlo: Nové sady 988/2, Brno, 602 00
-    <div style="margin-top:2rem;">
-      <label style="font-size:0.95em; color:#888; cursor:pointer;">
-        <input type="checkbox" id="retro-switch" style="vertical-align:middle; margin-right:6px;">
-        <span style="vertical-align:middle;">Retro mód</span>
-      </label>
-      <div id="retro-buttons" style="display:none; margin-top:1.2rem; gap:8px; justify-content:center; flex-wrap:wrap;"></div>
-    </div>
   </footer>
   <script>
     document.getElementById('currentYear').textContent = new Date().getFullYear();
@@ -644,250 +659,215 @@
 
     // Spotify widget
     let lastTrackId = null;
-  let trackEndTimestamp = null;
-  let lastSongData = null;
-  let apiInterval = null;
+    let trackEndTimestamp = null;
+    let lastSongData = null;
+    let apiInterval = null;
 
-  async function loadNowPlaying() {
-    try {
-      const res = await fetch("https://adamhornofmedia-github-io.vercel.app/api/spotify");
-      const data = await res.json();
+    async function loadNowPlaying() {
+      try {
+        const res = await fetch("https://adamhornofmedia-github-io.vercel.app/api/spotify");
+        const data = await res.json();
 
-      const widget = document.getElementById("spotify-widget");
-      if (!widget) return;
+        const widget = document.getElementById("spotify-widget");
+        if (!widget) return;
 
-      if (!data || !data.item) {
-        widget.innerHTML = `
-          <div style="display:flex;align-items:center;gap:10px;justify-content:center;">
-            <img src="/icons/spotify.svg" alt="Spotify" style="width:48px;height:48px;">
-            <div style="color:#aaa; font-size:1.1em;">Právě nic neposlouchám</div>
-          </div>
-        `;
-        lastTrackId = null;
-        trackEndTimestamp = null;
-        lastSongData = null;
-
-        if (!apiInterval) {
-          apiInterval = setInterval(loadNowPlaying, 60000);
-        }
-        return;
-      }
-
-      // Pokud něco hraje, zruš interval pro obnovu API
-      if (apiInterval) {
-        clearInterval(apiInterval);
-        apiInterval = null;
-      }
-
-      const song = data.item.name;
-      const artist = data.item.artists.map(a => a.name).join(", ");
-      const img = data.item.album.images[0].url;
-      const link = data.item.external_urls.spotify;
-      const trackId = data.item.id;
-      const progressMs = data.progress_ms;
-      const durationMs = data.item.duration_ms;
-      const isPlaying = data.is_playing; // <-- důležité!
-
-      lastSongData = { song, artist, img, link, durationMs, progressMs, isPlaying };
-
-      // Pokud je nová skladba, nastav trackEndTimestamp
-      if (trackId !== lastTrackId) {
-        lastTrackId = trackId;
-        trackEndTimestamp = Date.now() + (durationMs - progressMs);
-      }
-
-      let remainingMs, playedMs, progressWidth;
-      if (isPlaying) {
-        remainingMs = trackEndTimestamp - Date.now();
-        if (remainingMs < 0) remainingMs = 0;
-        playedMs = durationMs - remainingMs;
-      } else {
-        playedMs = progressMs;
-        remainingMs = durationMs - playedMs;
-      }
-      progressWidth = Math.round(playedMs / durationMs * 180);
-
-      const min = Math.floor(remainingMs / 60000);
-      const sec = String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, '0');
-
-      widget.innerHTML = `
-        <div style="display:flex;align-items:center;gap:10px;">
-          <img src="${img}" alt="Album cover" style="width:64px;height:64px;">
-          <div>
-            <a href="${link}" target="_blank" class="spotify-song-link">
-              ${song}
-            </a>
-            <div>${artist}</div>
-            <div style="margin-top:8px;">
-              <div class="spotify-progress-bar" style="background:#222; border-radius:4px; height:8px; width:180px; position:relative;">
-                <div class="spotify-progress" style="background:#00c6ff; height:8px; border-radius:4px; width:${progressWidth}px;"></div>
-              </div>
-              <div class="spotify-remaining" style="font-size:0.9em; color:#aaa; margin-top:2px;">
-                Zbývá ${min}:${sec} min
-              </div>
-              ${!isPlaying ? '<div style="color:#00c6ff; font-size:0.9em; margin-top:2px;">Pozastaveno</div>' : ''}
+        if (!data || !data.item) {
+          widget.innerHTML = `
+            <div style="display:flex;align-items:center;gap:10px;justify-content:center;">
+              <img src="/icons/spotify.svg" alt="Spotify" style="width:48px;height:48px;">
+              <div style="color:#aaa; font-size:1.1em;">Právě nic neposlouchám</div>
             </div>
-          </div>
-        </div>
-      `;
-    } catch (e) {
-      // Pokud fetch selže, zobraz logo a text
-      const widget = document.getElementById("spotify-widget");
-      if (widget) {
-        widget.innerHTML = `
-          <div style="display:flex;align-items:center;gap:10px;justify-content:center;">
-            <img src="/icons/spotify.svg" alt="Spotify" style="width:48px;height:48px;">
-            <div style="color:#aaa; font-size:1.1em;">Právě nic neposlouchám</div>
-          </div>
-        `;
-      }
-    }
-  }
+          `;
+          lastTrackId = null;
+          trackEndTimestamp = null;
+          lastSongData = null;
 
-  // První načtení dat ze Spotify
-  loadNowPlaying();
-
-  // Každou sekundu dopočítáváme progress bar a čas, API voláme jen při nové písni nebo když nic nehraje
-  setInterval(() => {
-    const widget = document.getElementById("spotify-widget");
-    if (lastTrackId && lastSongData && trackEndTimestamp) {
-      let remainingMs, playedMs, progressWidth;
-      if (lastSongData.isPlaying) {
-        remainingMs = trackEndTimestamp - Date.now();
-        if (remainingMs < 0) remainingMs = 0;
-        playedMs = lastSongData.durationMs - remainingMs;
-      } else {
-        playedMs = lastSongData.progressMs;
-        remainingMs = lastSongData.durationMs - playedMs;
-      }
-      progressWidth = Math.round(playedMs / lastSongData.durationMs * 180);
-
-      const min = Math.floor(remainingMs / 60000);
-      const sec = String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, '0');
-
-      const progressBar = widget.querySelector('.spotify-progress');
-      if (progressBar) progressBar.style.width = `${progressWidth}px`;
-      const timeDiv = widget.querySelector('.spotify-remaining');
-      if (timeDiv) timeDiv.textContent = `Zbývá ${min}:${sec} min`;
-
-      // Pozastaveno info
-      const pausedDiv = widget.querySelector('.spotify-paused');
-      if (pausedDiv) {
-        pausedDiv.style.display = lastSongData.isPlaying ? 'none' : 'block';
-      }
-
-      // Pokud skladba doběhla, načti znovu z API
-      if (remainingMs === 0) {
-        loadNowPlaying();
-      }
-    }
-  }, 1000);
-
-  async function loadCurrentlyReading() {
-    const url = "https://adamhornofmedia-github-io.vercel.app/api/goodreads"; // tvůj Vercel endpoint
-    try {
-      const res = await fetch(url);
-      const xml = await res.text();
-
-      // Parse XML
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(xml, "application/xml");
-      const items = Array.from(doc.querySelectorAll("item"));
-
-      const widget = document.getElementById("goodreads-widget");
-      if (items.length === 0) {
-        widget.innerHTML = "Momentálně nečtu žádnou knihu.";
-        return;
-      }
-
-      // Filtrovat knihy, které mají v <description> "read at:" prázdné
-      const currentlyReading = items.filter(item => {
-        const desc = item.querySelector("description")?.textContent || "";
-        const readAtMatch = desc.match(/read at:\s*([^<\n\r]*)/i);
-        return readAtMatch && readAtMatch[1].trim() === "";
-      });
-
-      if (currentlyReading.length === 0) {
-        widget.innerHTML = "Momentálně nečtu žádnou knihu.";
-        return;
-      }
-
-      widget.innerHTML = currentlyReading.map(item => {
-        const desc = item.querySelector("description")?.textContent || "";
-
-        // Odkaz na stránku knihy (vyparsuj z <a href="..."> v description)
-        let bookUrl = "#";
-        const bookUrlMatch = desc.match(/<a href="([^"]+)"[^>]*>/i);
-        if (bookUrlMatch) bookUrl = bookUrlMatch[1];
-
-        // Vyparsuj autora z description
-        let author = "";
-        const authorMatch = desc.match(/author:\s*([^<\n\r]+)/i);
-        if (authorMatch) {
-          author = authorMatch[1].trim();
+          if (!apiInterval) {
+            apiInterval = setInterval(loadNowPlaying, 60000);
+          }
+          return;
         }
 
-        // Obálka knihy
-        let cover = "";
-        const imgMatch = desc.match(/<img[^>]+src="([^"]+)"[^>]*>/i);
-        if (imgMatch) cover = imgMatch[1];
+        // Pokud něco hraje, zruš interval pro obnovu API
+        if (apiInterval) {
+          clearInterval(apiInterval);
+          apiInterval = null;
+        }
 
-        // Název knihy
-        const title = item.querySelector("title")?.textContent || "";
+        const song = data.item.name;
+        const artist = data.item.artists.map(a => a.name).join(", ");
+        const img = data.item.album.images[0].url;
+        const link = data.item.external_urls.spotify;
+        const trackId = data.item.id;
+        const progressMs = data.progress_ms;
+        const durationMs = data.item.duration_ms;
+        const isPlaying = data.is_playing;
 
-        return `
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;">
-            <img src="${cover}" alt="${title}" style="width:48px;height:70px;object-fit:cover;border-radius:6px;">
+        lastSongData = { song, artist, img, link, durationMs, progressMs, isPlaying };
+
+        if (trackId !== lastTrackId) {
+          lastTrackId = trackId;
+          trackEndTimestamp = Date.now() + (durationMs - progressMs);
+        }
+
+        let remainingMs, playedMs, progressWidth;
+        if (isPlaying) {
+          remainingMs = trackEndTimestamp - Date.now();
+          if (remainingMs < 0) remainingMs = 0;
+          playedMs = durationMs - remainingMs;
+        } else {
+          playedMs = progressMs;
+          remainingMs = durationMs - playedMs;
+        }
+        progressWidth = Math.round(playedMs / durationMs * 180);
+
+        const min = Math.floor(remainingMs / 60000);
+        const sec = String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, '0');
+
+        widget.innerHTML = `
+          <div style="display:flex;align-items:center;gap:10px;">
+            <img src="${img}" alt="Album cover" style="width:64px;height:64px;">
             <div>
-              <a href="${bookUrl}" target="_blank" style="color:#00c6ff;font-weight:600;text-decoration:none;">${title}</a>
-              <div style="color:#aaa;font-size:0.95em;">${author}</div>
+              <a href="${link}" target="_blank" class="spotify-song-link">
+                ${song}
+              </a>
+              <div>${artist}</div>
+              <div style="margin-top:8px;">
+                <div class="spotify-progress-bar" style="background:#222; border-radius:4px; height:8px; width:180px; position:relative;">
+                  <div class="spotify-progress" style="background:#00c6ff; height:8px; border-radius:4px; width:${progressWidth}px;"></div>
+                </div>
+                <div class="spotify-remaining" style="font-size:0.9em; color:#aaa; margin-top:2px;">
+                  Zbývá ${min}:${sec} min
+                </div>
+                ${!isPlaying ? '<div style="color:#00c6ff; font-size:0.9em; margin-top:2px;">Pozastaveno</div>' : ''}
+              </div>
             </div>
           </div>
         `;
-      }).join('');
-    } catch (e) {
-      document.getElementById("goodreads-widget").innerHTML = "Nelze načíst knihy.";
-    }
-  }
-  loadCurrentlyReading();
-
-  // Filtr projektů podle štítků (jen aktuální tagy)
-  const tagFilter = document.getElementById('project-tag-filter');
-  const projectList = document.getElementById('project-list');
-  const allProjects = Array.from(projectList.children);
-
-  tagFilter.addEventListener('change', function() {
-    const tag = this.value;
-    allProjects.forEach(project => {
-      if (tag === 'all' || project.dataset.tags.includes(tag)) {
-        project.style.display = '';
-      } else {
-        project.style.display = 'none';
+      } catch (e) {
+        const widget = document.getElementById("spotify-widget");
+        if (widget) {
+          widget.innerHTML = `
+            <div style="display:flex;align-items:center;gap:10px;justify-content:center;">
+              <img src="/icons/spotify.svg" alt="Spotify" style="width:48px;height:48px;">
+              <div style="color:#aaa; font-size:1.1em;">Právě nic neposlouchám</div>
+            </div>
+          `;
+        }
       }
+    }
+
+    loadNowPlaying();
+
+    setInterval(() => {
+      const widget = document.getElementById("spotify-widget");
+      if (lastTrackId && lastSongData && trackEndTimestamp) {
+        let remainingMs, playedMs, progressWidth;
+        if (lastSongData.isPlaying) {
+          remainingMs = trackEndTimestamp - Date.now();
+          if (remainingMs < 0) remainingMs = 0;
+          playedMs = lastSongData.durationMs - remainingMs;
+        } else {
+          playedMs = lastSongData.progressMs;
+          remainingMs = lastSongData.durationMs - playedMs;
+        }
+        progressWidth = Math.round(playedMs / lastSongData.durationMs * 180);
+
+        const min = Math.floor(remainingMs / 60000);
+        const sec = String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, '0');
+
+        const progressBar = widget.querySelector('.spotify-progress');
+        if (progressBar) progressBar.style.width = `${progressWidth}px`;
+        const timeDiv = widget.querySelector('.spotify-remaining');
+        if (timeDiv) timeDiv.textContent = `Zbývá ${min}:${sec} min`;
+
+        const pausedDiv = widget.querySelector('.spotify-paused');
+        if (pausedDiv) {
+          pausedDiv.style.display = lastSongData.isPlaying ? 'none' : 'block';
+        }
+
+        if (remainingMs === 0) {
+          loadNowPlaying();
+        }
+      }
+    }, 1000);
+
+    async function loadCurrentlyReading() {
+      const url = "https://adamhornofmedia-github-io.vercel.app/api/goodreads";
+      try {
+        const res = await fetch(url);
+        const xml = await res.text();
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(xml, "application/xml");
+        const items = Array.from(doc.querySelectorAll("item"));
+
+        const widget = document.getElementById("goodreads-widget");
+        if (items.length === 0) {
+          widget.innerHTML = "Momentálně nečtu žádnou knihu.";
+          return;
+        }
+
+        const currentlyReading = items.filter(item => {
+          const desc = item.querySelector("description")?.textContent || "";
+          const readAtMatch = desc.match(/read at:\s*([^<\n\r]*)/i);
+          return readAtMatch && readAtMatch[1].trim() === "";
+        });
+
+        if (currentlyReading.length === 0) {
+          widget.innerHTML = "Momentálně nečtu žádnou knihu.";
+          return;
+        }
+
+        widget.innerHTML = currentlyReading.map(item => {
+          const desc = item.querySelector("description")?.textContent || "";
+
+          let bookUrl = "#";
+          const bookUrlMatch = desc.match(/<a href="([^"]+)"[^>]*>/i);
+          if (bookUrlMatch) bookUrl = bookUrlMatch[1];
+
+          let author = "";
+          const authorMatch = desc.match(/author:\s*([^<\n\r]+)/i);
+          if (authorMatch) {
+            author = authorMatch[1].trim();
+          }
+
+          let cover = "";
+          const imgMatch = desc.match(/<img[^>]+src="([^"]+)"[^>]*>/i);
+          if (imgMatch) cover = imgMatch[1];
+
+          const title = item.querySelector("title")?.textContent || "";
+
+          return `
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;">
+              <img src="${cover}" alt="${title}" style="width:48px;height:70px;object-fit:cover;border-radius:6px;">
+              <div>
+                <a href="${bookUrl}" target="_blank" style="color:#00c6ff;font-weight:600;text-decoration:none;">${title}</a>
+                <div style="color:#aaa;font-size:0.95em;">${author}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        document.getElementById("goodreads-widget").innerHTML = "Nelze načíst knihy.";
+      }
+    }
+    loadCurrentlyReading();
+
+    const tagFilter = document.getElementById('project-tag-filter');
+    const projectList = document.getElementById('project-list');
+    const allProjects = Array.from(projectList.children);
+
+    tagFilter.addEventListener('change', function() {
+      const tag = this.value;
+      allProjects.forEach(project => {
+        if (tag === 'all' || project.dataset.tags.includes(tag)) {
+          project.style.display = '';
+        } else {
+          project.style.display = 'none';
+        }
+      });
     });
-  });
-
-  // Retro mód
-  document.getElementById('retro-switch').addEventListener('change', function() {
-    if (this.checked) {
-      document.body.classList.add('retro');
-    } else {
-      document.body.classList.remove('retro');
-    }
-  });
-
-  // Retro mód + retro tlačítka nahoře
-  const retroSwitch = document.getElementById('retro-switch');
-  const retroButtonsTop = document.getElementById('retro-buttons-top');
-  retroSwitch.addEventListener('change', function() {
-    if (this.checked) {
-      document.body.classList.add('retro');
-      retroButtonsTop.style.display = "flex";
-    } else {
-      document.body.classList.remove('retro');
-      retroButtonsTop.style.display = "none";
-    }
-  });
   </script>
 </body>
 </html>
