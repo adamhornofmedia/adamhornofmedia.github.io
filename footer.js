@@ -47,6 +47,12 @@
       <span>Made with <span aria-label="love">❤</span> by</span>
       <a href="https://hornof.dev/?utm_source=footer&utm_medium=link" target="_blank" rel="noopener nofollow">hornof.dev</a>
     </div>
+    <div class="tool-icons">
+      <div>
+        <img src="/icons/javascript.svg" alt="JavaScript" title="JavaScript" />
+        <div style="margin-top:0.4rem;font-size:0.98em;color:#aaa;">JavaScript</div>
+      </div>
+    </div>
   `;
 
   document.body.appendChild(footer);
