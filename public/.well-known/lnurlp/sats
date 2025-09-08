@@ -1,6 +1,7 @@
 {
-  "callback": "hhttps://lnbits.cz/lnurlp/api/v1/lnurl/cb/bKmS5r",
-  "maxSendable": 100000000,
+  "tag": "payRequest",
+  "callback": "https://lnbits.cz/lnurlp/api/v1/lnurl/cb/bKmS5r",
   "minSendable": 1000,
-  "metadata": "[[\"text/plain\", \"Payment to sats@hornof.dev\"]]"
+  "maxSendable": 10000000000,
+  "metadata": "[[\"text/plain\", \"Payment to adam\"], [\"text/identifier\", \"sats@hornof.dev\"]]"
 }
