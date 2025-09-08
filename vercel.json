@@ -1,0 +1,10 @@
+{
+  "headers": [
+    {
+      "source": "/.well-known/lnurlp/sats",
+      "headers": [
+        { "key": "Content-Type", "value": "text/plain" }
+      ]
+    }
+  ]
+}
