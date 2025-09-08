@@ -1,0 +1,6 @@
+{
+  "callback": "https://lnbits.cz/lnurlp/cb/bKmS5r",
+  "maxSendable": 100000000,
+  "minSendable": 1000,
+  "metadata": "[[\"text/plain\", \"Payment to sats@hornof.dev\"]]"
+}
