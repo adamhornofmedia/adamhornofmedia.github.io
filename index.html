@@ -204,7 +204,7 @@
       flex-wrap: wrap;
     }
     .kontakt-icons a img {
-      transition: transform 0.2s;
+      transition: transform 0.2s, filter 0.2s, background 0.2s;
       border-radius: 8px;
       background: #222;
       padding: 6px;
@@ -214,6 +214,26 @@
     .kontakt-icons a:hover img {
       transform: scale(1.2);
       background: var(--primary);
+    }
+    #social .kontakt-icons a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      border-radius: 8px;
+      background: #222;
+      transition: background 0.2s;
+    }
+    #social .kontakt-icons a:hover {
+      background: var(--primary);
+    }
+    #social .kontakt-icons a img {
+      background: transparent;
+      padding: 0;
+    }
+    #social .kontakt-icons a:hover img {
+      filter: brightness(0) saturate(100%);
+      background: transparent;
     }
     .spotify-song-link {
       font-weight: bold;
@@ -628,7 +648,7 @@
           <img src="/icons/printables-logo.svg" alt="Printables" />
         </a>
         <a href="https://www.csfd.cz/uzivatel/606787-adam-hornof/prehled/" title="ČSFD" target="_blank" rel="noopener noreferrer">
-          <img src="/icons/csfd.svg" alt="ČSFD" />
+          <img src="/icons/csfd.svg" alt="ČSFD" style="width:46px;height:46px;" />
         </a>
         <a href="https://www.goodreads.com/nejsemzpardubic" title="Goodreads" target="_blank" rel="noopener noreferrer">
           <img src="/icons/goodreads.svg" alt="Goodreads" />
