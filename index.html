@@ -726,6 +726,63 @@
       .tool-grid { grid-template-columns: repeat(3, 1fr); }
     }
 
+
+    /* ── TYPEWRITER ── */
+    .typewriter-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      min-height: 1.4em;
+    }
+
+    .typewriter-text {
+      color: var(--cyan);
+      border-right: 2px solid var(--cyan);
+      padding-right: 3px;
+      animation: blink 0.75s step-end infinite;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    @keyframes blink {
+      0%, 100% { border-color: var(--cyan); }
+      50% { border-color: transparent; }
+    }
+
+
+    /* ── PROJECT TAG GLOW ── */
+    .project[data-tags="wordpress"]:hover {
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(41,121,255,0.25), 0 4px 32px rgba(41,121,255,0.12);
+      border-color: rgba(41,121,255,0.35) !important;
+    }
+
+    .project[data-tags="ecommerce"]:hover {
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,229,100,0.25), 0 4px 32px rgba(0,229,100,0.12);
+      border-color: rgba(0,229,100,0.35) !important;
+    }
+
+    .project[data-tags="wordpress"] .project-tag {
+      color: #6ea8fe;
+      background: rgba(41,121,255,0.1);
+      border-color: rgba(41,121,255,0.2);
+    }
+
+    .project[data-tags="ecommerce"] .project-tag {
+      color: #4ade80;
+      background: rgba(0,229,100,0.08);
+      border-color: rgba(0,229,100,0.18);
+    }
+
+    .project {
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
   </style>
 </head>
 <body>
@@ -752,7 +809,8 @@
       <div class="profile-row">
         <img src="/me.png" alt="Adam Hornof" class="profile-avatar">
         <div class="profile-text">
-          <h2 style="margin-bottom:12px;">Ahoj, jsem Adam Hornof</h2>
+          <h2 style="margin-bottom:8px;">Ahoj, jsem Adam Hornof</h2>
+          <div class="typewriter-wrap">— <span class="typewriter-text" id="typewriter"></span></div>
           <p>
             <span id="age"></span>letý student a tvůrce webů, který se nebojí zkoušet nové věci.<br>
             Věnuji se projektům, které mají smysl – od technické podpory neziskovek až po vlastní e-shopy.<br>
@@ -902,15 +960,6 @@
             <span>Napiš mi</span>
           </div>
         </a>
-        <a href="https://www.linkedin.com/in/adamhornof/" class="contact-item" target="_blank">
-          <div class="contact-icon-wrap">
-            <img src="/icons/linkedin.svg" alt="LinkedIn">
-          </div>
-          <div class="contact-item-info">
-            <strong>LinkedIn</strong>
-            <span>adamhornof</span>
-          </div>
-        </a>
         <a href="tel:+420727823415" class="contact-item">
           <div class="contact-icon-wrap">
             <img src="/icons/telefon.svg" alt="Telefon">
@@ -920,8 +969,23 @@
             <span>+420 727 823 415</span>
           </div>
         </a>
-        <a href="/cdn-cgi/l/email-protection#620811070f220306030f0a0d100c0d044c0118" class="cta-email" target="_blank">
-          Napsat e-mail →
+        <a href="https://www.linkedin.com/in/adamhornof/" class="contact-item" target="_blank">
+          <div class="contact-icon-wrap">
+            <img src="/icons/linkedin.svg" alt="LinkedIn">
+          </div>
+          <div class="contact-item-info">
+            <strong>LinkedIn</strong>
+            <span>adamhornof</span>
+          </div>
+        </a>
+        <a href="https://github.com/adamhornofmedia" class="contact-item" target="_blank">
+          <div class="contact-icon-wrap">
+            <img src="/icons/github.svg" alt="GitHub">
+          </div>
+          <div class="contact-item-info">
+            <strong>GitHub</strong>
+            <span>adamhornofmedia</span>
+          </div>
         </a>
       </div>
     </section>
@@ -1006,91 +1070,148 @@
     });
 
     // Spotify
-    let lastTrackId = null, trackEndTimestamp = null, lastSongData = null, apiInterval = null;
+    // trackEnd = wall-clock timestamp kdy aktuální track skončí
+    // Každou sekundu posouváme progress lokálně; API voláme jen při:
+    //   a) načtení stránky, b) dohrání tracku, c) každých 30s jako záloha
+    let spotifyState = null; // { trackId, song, artist, img, link, durationMs, endTs, isPlaying }
+    let spotifyFetching = false;
 
-    async function loadNowPlaying() {
+    function showSpotifyIdle() {
+      const w = document.getElementById('spotify-widget');
+      if (w) w.innerHTML = `<div style="color:var(--muted);font-size:0.9rem;display:flex;align-items:center;gap:10px;"><img src="/icons/spotify.svg" style="width:24px;height:24px;opacity:0.4;">Právě nic neposlouchám</div>`;
+    }
+
+    async function fetchSpotify() {
+      if (spotifyFetching) return;
+      spotifyFetching = true;
       try {
         const res = await fetch("https://adamhornofmedia-github-io.vercel.app/api/spotify");
         const data = await res.json();
-        const widget = document.getElementById("spotify-widget");
-        if (!widget) return;
 
         if (!data || !data.item) {
-          widget.innerHTML = `<div style="color:var(--muted);font-size:0.9rem;display:flex;align-items:center;gap:10px;"><img src="/icons/spotify.svg" style="width:24px;height:24px;opacity:0.4;">Právě nic neposlouchám</div>`;
-          lastTrackId = null; trackEndTimestamp = null; lastSongData = null;
-          if (!apiInterval) apiInterval = setInterval(loadNowPlaying, 60000);
+          spotifyState = null;
+          showSpotifyIdle();
           return;
         }
 
-        if (apiInterval) { clearInterval(apiInterval); apiInterval = null; }
-
         const { name: song, artists, album, external_urls, id: trackId, duration_ms: durationMs } = data.item;
-        const artist = artists.map(a => a.name).join(", ");
-        const img = album.images[0].url;
-        const link = external_urls.spotify;
         const progressMs = data.progress_ms;
         const isPlaying = data.is_playing;
 
-        lastSongData = { song, artist, img, link, durationMs, progressMs, isPlaying };
-        if (trackId !== lastTrackId) {
-          lastTrackId = trackId;
-          trackEndTimestamp = Date.now() + (durationMs - progressMs);
-        }
+        // Vždy přepočítej endTs podle čerstvých dat z API
+        const endTs = isPlaying ? Date.now() + (durationMs - progressMs) : null;
 
-        updateSpotifyUI();
+        spotifyState = {
+          trackId,
+          song,
+          artist: artists.map(a => a.name).join(', '),
+          img: album.images[0].url,
+          link: external_urls.spotify,
+          durationMs,
+          progressMs,
+          isPlaying,
+          endTs,
+          fetchedAt: Date.now(),
+        };
+
+        renderSpotify();
       } catch (e) {
-        const widget = document.getElementById("spotify-widget");
-        if (widget) widget.innerHTML = `<div style="color:var(--muted);font-size:0.9rem;">Právě nic neposlouchám</div>`;
+        showSpotifyIdle();
+      } finally {
+        spotifyFetching = false;
       }
     }
 
-    function updateSpotifyUI() {
-      if (!lastSongData || !lastTrackId) return;
-      const widget = document.getElementById("spotify-widget");
-      const { song, artist, img, link, durationMs, isPlaying } = lastSongData;
+    function renderSpotify() {
+      const w = document.getElementById('spotify-widget');
+      if (!w || !spotifyState) return;
+      const s = spotifyState;
 
       let playedMs, remainingMs;
-      if (isPlaying) {
-        remainingMs = Math.max(0, trackEndTimestamp - Date.now());
-        playedMs = durationMs - remainingMs;
+      if (s.isPlaying && s.endTs) {
+        remainingMs = Math.max(0, s.endTs - Date.now());
+        playedMs = s.durationMs - remainingMs;
       } else {
-        playedMs = lastSongData.progressMs;
-        remainingMs = durationMs - playedMs;
+        playedMs = s.progressMs;
+        remainingMs = s.durationMs - playedMs;
       }
-      const pct = Math.min(100, Math.round(playedMs / durationMs * 100));
+
+      const pct = Math.min(100, playedMs / s.durationMs * 100).toFixed(1);
       const min = Math.floor(remainingMs / 60000);
       const sec = String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, '0');
 
-      // Check if widget needs full re-render or just update
-      const existingBar = widget.querySelector('.spotify-progress');
-      if (existingBar && widget.querySelector('.album-art')) {
-        existingBar.style.width = pct + '%';
-        const timeEl = widget.querySelector('.spotify-remaining');
-        if (timeEl) timeEl.textContent = `${min}:${sec} zbývá`;
+      // Pokud widget už renderuje tento track, jen updatuj progress
+      if (w.dataset.trackId === s.trackId) {
+        const bar = w.querySelector('.spotify-progress');
+        const timeEl = w.querySelector('.spotify-remaining');
+        if (bar) bar.style.width = pct + '%';
+        if (timeEl) timeEl.textContent = `${min}:${sec} zbývá${!s.isPlaying ? ' · pozastaveno' : ''}`;
         return;
       }
 
-      widget.innerHTML = `
-        <img src="${img}" alt="Album" class="album-art">
+      // Nový track — full render
+      w.dataset.trackId = s.trackId;
+      w.innerHTML = `
+        <img src="${s.img}" alt="Album" class="album-art">
         <div class="spotify-info">
-          <a href="${link}" target="_blank" class="spotify-song-link">${song}</a>
-          <div class="spotify-artist">${artist}</div>
+          <a href="${s.link}" target="_blank" class="spotify-song-link">${s.song}</a>
+          <div class="spotify-artist">${s.artist}</div>
           <div class="spotify-bar-wrap">
             <div class="spotify-progress" style="width:${pct}%"></div>
           </div>
-          <div class="spotify-remaining">${min}:${sec} zbývá${!isPlaying ? ' · pozastaveno' : ''}</div>
-        </div>
-      `;
+          <div class="spotify-remaining">${min}:${sec} zbývá${!s.isPlaying ? ' · pozastaveno' : ''}</div>
+        </div>`;
     }
 
-    loadNowPlaying();
+    // Každou sekundu: render + detekce konce tracku
     setInterval(() => {
-      if (lastTrackId && lastSongData) {
-        updateSpotifyUI();
-        const remaining = trackEndTimestamp - Date.now();
-        if (remaining <= 0) loadNowPlaying();
+      if (!spotifyState) return;
+      if (spotifyState.isPlaying && spotifyState.endTs) {
+        const remaining = spotifyState.endTs - Date.now();
+        if (remaining <= 0) {
+          // Track dohrál — fetch nové písničky (s krátkým zpožděním aby API stihlo přepnout)
+          spotifyState = null;
+          document.getElementById('spotify-widget').dataset.trackId = '';
+          setTimeout(fetchSpotify, 2000);
+          return;
+        }
       }
+      renderSpotify();
     }, 1000);
+
+    // Záložní refresh každých 30s (zachytí ruční přeskočení tracku)
+    setInterval(fetchSpotify, 30000);
+
+
+    // Typewriter
+    const twWords = ['Student', 'Tvůrce', 'Geek', 'Webař', 'Brňák'];
+    let twIdx = 0, twChar = 0, twDeleting = false;
+    const twEl = document.getElementById('typewriter');
+
+    function typewriterTick() {
+      const word = twWords[twIdx];
+      if (!twDeleting) {
+        twEl.textContent = word.slice(0, ++twChar);
+        if (twChar === word.length) {
+          twDeleting = true;
+          setTimeout(typewriterTick, 1600);
+          return;
+        }
+        setTimeout(typewriterTick, 90);
+      } else {
+        twEl.textContent = word.slice(0, --twChar);
+        if (twChar === 0) {
+          twDeleting = false;
+          twIdx = (twIdx + 1) % twWords.length;
+          setTimeout(typewriterTick, 300);
+          return;
+        }
+        setTimeout(typewriterTick, 50);
+      }
+    }
+    typewriterTick();
+
+    fetchSpotify();
 
     // Goodreads
     async function loadCurrentlyReading() {
