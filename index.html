@@ -5,910 +5,1129 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Adam Hornof</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #00c6ff;
-      --secondary: #0072ff;
-      --bg: #10131a;
-      --card: #181c24;
-      --accent: #fff;
-      --muted: #aaa;
-      --radius: 1.5rem;
+      --cyan: #00e5ff;
+      --blue: #2979ff;
+      --bg: #080b12;
+      --surface: #0d1117;
+      --surface2: #111620;
+      --border: rgba(255,255,255,0.07);
+      --text: #f0f4ff;
+      --muted: #6b7a99;
+      --accent: #00e5ff;
+      --radius: 16px;
+      --radius-lg: 24px;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: 'Inter', Arial, sans-serif;
+      font-family: 'DM Sans', sans-serif;
       background: var(--bg);
-      color: var(--accent);
+      color: var(--text);
       min-height: 100vh;
-      line-height: 1.7;
-      letter-spacing: 0.01em;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
-    header {
-      background: linear-gradient(120deg, var(--primary), var(--secondary));
-      padding: 3rem 2rem 2rem 2rem;
-      text-align: center;
-      border-bottom-left-radius: var(--radius);
-      border-bottom-right-radius: var(--radius);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-      position: relative;
-      z-index: 2;
+
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 9999;
     }
-    header h1 {
-      font-size: 3.2rem;
-      font-weight: 800;
-      letter-spacing: 2px;
-      margin-bottom: 0.5rem;
-      color: #fff;
-      text-shadow: 0 2px 12px #0072ff55;
+
+    /* ── AMBIENT GLOW ── */
+    .glow-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
     }
-    header p {
-      font-size: 1.3rem;
-      color: #e0f7ff;
-      margin-bottom: 1.5rem;
+    .glow-orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0,229,255,0.08) 0%, transparent 70%);
+      top: -200px; right: -100px;
     }
+    .glow-orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(41,121,255,0.07) 0%, transparent 70%);
+      bottom: 200px; left: -100px;
+    }
+
+    /* ── NAV ── */
     nav {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
       display: flex;
-      justify-content: center;
-      gap: 2.5rem;
-      background: var(--card);
-      padding: 1.2rem 0;
-      border-radius: 0 0 var(--radius) var(--radius);
-      box-shadow: 0 2px 12px #0002;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      align-items: center;
+      gap: 0;
+      background: rgba(13,17,23,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 6px;
     }
+
     nav a {
-      color: var(--primary);
+      color: var(--muted);
+      font-family: 'Syne', sans-serif;
       font-weight: 600;
-      font-size: 1.1rem;
+      font-size: 0.85rem;
       text-decoration: none;
-      padding: 0.3rem 1rem;
-      border-radius: 0.5rem;
-      transition: background 0.2s, color 0.2s;
+      padding: 8px 18px;
+      border-radius: 40px;
+      transition: all 0.2s ease;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
     }
+
     nav a:hover {
-      background: var(--primary);
-      color: #10131a;
+      color: var(--text);
+      background: rgba(255,255,255,0.06);
     }
+
+    nav a.active {
+      color: var(--bg);
+      background: var(--cyan);
+    }
+
+    /* ── LAYOUT ── */
     main {
+      position: relative;
+      z-index: 1;
       max-width: 900px;
-      margin: 3rem auto 2rem auto;
-      padding: 0 2rem;
+      margin: 0 auto;
+      padding: 120px 24px 80px;
       display: flex;
       flex-direction: column;
-      gap: 3rem;
+      gap: 32px;
     }
-    section {
-      background: var(--card);
+
+    /* ── HERO ── */
+    .hero {
+      padding: 80px 0 40px;
+      position: relative;
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 24px;
+    }
+
+    .hero-label::before {
+      content: '';
+      width: 24px;
+      height: 1px;
+      background: var(--cyan);
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+
+    .hero h1 span {
+      display: block;
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 480px;
+      font-weight: 300;
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--cyan);
+      color: var(--bg);
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 50px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background: #33ecff;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 32px rgba(0,229,255,0.3);
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+      transition: all 0.2s ease;
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(0,229,255,0.15);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,229,255,0.3), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    /* ── SECTION HEADINGS ── */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .section-label::before {
+      content: '';
+      width: 16px;
+      height: 1px;
+      background: var(--muted);
+    }
+
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    /* ── PROFILE ── */
+    .profile-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 28px;
+    }
+
+    .profile-avatar {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(0,229,255,0.3);
+      flex-shrink: 0;
+    }
+
+    .profile-text p {
+      color: var(--muted);
+      font-weight: 300;
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+
+    /* ── SPOTIFY ── */
+    .spotify-wrapper {
+      margin-top: 28px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+    }
+
+    .now-playing-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #1db954;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    #spotify-widget {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #spotify-widget img.album-art {
+      width: 56px;
+      height: 56px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .spotify-info { flex: 1; min-width: 0; }
+
+    .spotify-song-link {
+      font-weight: 500;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.95rem;
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .spotify-song-link:hover { color: var(--cyan); }
+
+    .spotify-artist {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .spotify-bar-wrap {
+      margin-top: 10px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 2px;
+      height: 3px;
+      width: 100%;
+    }
+
+    .spotify-progress {
+      height: 3px;
+      border-radius: 2px;
+      background: #1db954;
+      transition: width 1s linear;
+    }
+
+    .spotify-remaining {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    /* ── PROJECTS ── */
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 7px 16px;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
+    .filter-btn.active { background: var(--cyan); color: var(--bg); border-color: var(--cyan); }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .project {
+      background: var(--surface2);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
-      box-shadow: 0 2px 24px #0003;
-      padding: 2.5rem 2rem;
-      margin-bottom: 0;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.25s ease;
       position: relative;
       overflow: hidden;
     }
-    section h2 {
-      font-size: 2.2rem;
-      font-weight: 800;
-      color: var(--primary);
-      margin-bottom: 1.2rem;
-      letter-spacing: 1px;
-      border-bottom: 2px solid var(--primary);
+
+    .project:hover {
+      border-color: rgba(0,229,255,0.2);
+      transform: translateY(-3px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+    }
+
+    .project-tag {
       display: inline-block;
-      padding-bottom: 0.3rem;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      background: rgba(0,229,255,0.08);
+      border: 1px solid rgba(0,229,255,0.15);
+      border-radius: 4px;
+      padding: 3px 8px;
+      align-self: flex-start;
     }
-    .profile {
-      display: flex;
-      align-items: center;
-      gap: 2.5rem;
-      margin-bottom: 2rem;
+
+    .project h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
     }
-    .profile img {
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      object-fit: cover;
-      box-shadow: 0 4px 24px #00c6ff33;
-      border: 4px solid var(--primary);
-      background: #fff;
+
+    .project p {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.65;
     }
-    .profile-info {
-      flex: 1;
-    }
-    .project-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 2rem;
-    }
-    .project {
-      background: #23283a;
-      border-radius: 1rem;
-      box-shadow: 0 2px 16px #0072ff22;
-      padding: 1.5rem 1.2rem;
+
+    .project ul {
+      list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 0.7rem;
-      transition: transform 0.2s;
+      gap: 4px;
     }
-    .project:hover {
-      transform: translateY(-4px) scale(1.03);
-      box-shadow: 0 6px 32px #00c6ff44;
-    }
-    .project h3 {
-      color: var(--primary);
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-    .project ul {
-      padding-left: 1.2rem;
-      margin-bottom: 0.5rem;
-    }
+
     .project li {
-      margin-bottom: 0.3rem;
       color: var(--muted);
-      font-size: 1rem;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
     }
+
+    .project li::before {
+      content: '→';
+      color: var(--cyan);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+
     .project a.button {
-      margin-top: 0.5rem;
-      margin-right: 0.7rem;
-      background: var(--primary);
-      color: #10131a;
-      font-weight: 600;
-      border-radius: 0.5rem;
-      padding: 0.5rem 1.2rem;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
       text-decoration: none;
-      transition: background 0.2s, color 0.2s;
-      display: inline-block;
-      font-size: 1rem;
-    }
-    .project a.button:hover {
-      background: var(--secondary);
-      color: #fff;
-    }
-    .tool-icons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2.5rem;
-      justify-content: center;
-      margin-top: 2rem;
-      margin-bottom: 1rem;
-    }
-    .tool-icons div {
-      flex: 1 1 120px;
-      max-width: 140px;
-      text-align: center;
-    }
-    .tool-icons img {
-      width: 56px;
-      height: 56px;
-      margin-bottom: 0.7rem;
-      filter: drop-shadow(0 2px 8px #00c6ff33);
-      transition: transform 0.2s;
-    }
-    .tool-icons img:hover {
-      transform: scale(1.18);
-    }
-    .kontakt-icons {
-      display: flex;
-      gap: 2rem;
-      justify-content: center;
-      align-items: center;
-      margin-top: 2rem;
-      flex-wrap: wrap;
-    }
-    .kontakt-icons a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px;
+      padding: 7px 14px;
       border-radius: 8px;
-      background: #222;
-      transition: background 0.2s;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      transition: all 0.2s ease;
     }
-    .kontakt-icons a img {
+
+    .project a.button:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      background: rgba(0,229,255,0.05);
+    }
+
+    /* ── STACK ── */
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 12px;
+    }
+
+    .tool-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 12px;
+      text-align: center;
+      transition: all 0.2s ease;
+      cursor: default;
+    }
+
+    .tool-item:hover {
+      border-color: rgba(0,229,255,0.2);
+      background: rgba(0,229,255,0.03);
+      transform: translateY(-2px);
+    }
+
+    .tool-item img {
       width: 40px;
       height: 40px;
-      background: transparent;
-      padding: 0;
+      object-fit: contain;
+      margin-bottom: 10px;
+      filter: brightness(0.85);
+      transition: filter 0.2s ease;
     }
-    .kontakt-icons a:hover {
-      background: var(--primary);
+
+    .tool-item:hover img { filter: brightness(1); }
+
+    .tool-item p {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: 500;
     }
-    .kontakt-icons a:hover img {
-      filter: brightness(0) saturate(100%);
+
+    /* ── GOODREADS ── */
+    #goodreads-widget {
+      color: var(--muted);
     }
-    #social .kontakt-icons a {
-      display: inline-flex;
+
+    /* ── CONTACT ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .contact-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .contact-item:hover {
+      border-color: rgba(0,229,255,0.25);
+      background: rgba(0,229,255,0.03);
+    }
+
+    .contact-icon-wrap {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      display: flex;
       align-items: center;
       justify-content: center;
-      padding: 6px;
-      border-radius: 8px;
-      background: #222;
-      transition: background 0.2s;
+      flex-shrink: 0;
     }
-    #social .kontakt-icons a:hover {
-      background: var(--primary);
+
+    .contact-icon-wrap img {
+      width: 22px;
+      height: 22px;
     }
-    #social .kontakt-icons a img {
-      background: transparent;
-      padding: 0;
+
+    .contact-item-info strong {
+      display: block;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--text);
     }
-    #social .kontakt-icons a:hover img {
-      filter: brightness(0) saturate(100%);
-      background: transparent;
-    }
-    .spotify-song-link {
-      font-weight: bold;
-      color: var(--accent);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .spotify-song-link:hover {
-      color: var(--primary);
-      text-decoration: underline;
-    }
-    .goodreads-widget {
-      margin-top: 1.5rem;
-    }
-    footer {
-      text-align: center;
-      padding: 2rem;
-      background: #181c24;
+
+    .contact-item-info span {
+      font-size: 0.8rem;
       color: var(--muted);
-      font-size: 1rem;
-      border-top-left-radius: var(--radius);
-      border-top-right-radius: var(--radius);
-      margin-top: 3rem;
-      box-shadow: 0 -2px 24px #0002;
     }
+
+    .cta-email {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(135deg, rgba(0,229,255,0.1) 0%, rgba(41,121,255,0.1) 100%);
+      border: 1px solid rgba(0,229,255,0.2);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-decoration: none;
+      color: var(--cyan);
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+      transition: all 0.2s ease;
+    }
+
+    .cta-email:hover {
+      background: linear-gradient(135deg, rgba(0,229,255,0.15) 0%, rgba(41,121,255,0.15) 100%);
+      border-color: rgba(0,229,255,0.4);
+      box-shadow: 0 0 40px rgba(0,229,255,0.1);
+    }
+
+    /* ── SOCIAL ── */
+    .social-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .social-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .social-item:hover {
+      border-color: rgba(0,229,255,0.2);
+      color: var(--text);
+    }
+
+    .social-item img {
+      width: 20px;
+      height: 20px;
+      filter: brightness(0.7);
+      transition: filter 0.2s ease;
+    }
+
+    .social-item:hover img { filter: brightness(1); }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 40px 24px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      border-top: 1px solid var(--border);
+      line-height: 2;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero { animation: fadeUp 0.6s ease both; }
+    .card:nth-child(1) { animation: fadeUp 0.6s ease 0.1s both; }
+    .card:nth-child(2) { animation: fadeUp 0.6s ease 0.15s both; }
+    .card:nth-child(3) { animation: fadeUp 0.6s ease 0.2s both; }
+    .card:nth-child(4) { animation: fadeUp 0.6s ease 0.25s both; }
+    .card:nth-child(5) { animation: fadeUp 0.6s ease 0.3s both; }
+    .card:nth-child(6) { animation: fadeUp 0.6s ease 0.35s both; }
+
+    /* ── RESPONSIVE ── */
     @media (max-width: 700px) {
-      main { padding: 0 0.5rem; }
-      section { padding: 1.2rem 0.7rem; }
-      .profile { flex-direction: column; gap: 1.2rem; }
-      .profile img { width: 100px; height: 100px; }
-      .tool-icons { gap: 1.2rem; }
-      .kontakt-icons { gap: 1rem; }
-      .project-list { grid-template-columns: 1fr; }
       nav {
-        flex-direction: column;
-        gap: 0.5rem;
-        align-items: center;
-        padding: 0.3rem 0;
-        border-radius: 0 0 1rem 1rem;
-        box-shadow: 0 1px 6px #0002;
-        font-size: 0.98rem;
-        position: static !important;
-        top: auto !important;
-        z-index: auto !important;
-        box-shadow: none;
+        top: 12px;
+        padding: 4px;
+        gap: 0;
       }
       nav a {
-        font-size: 1rem;
-        padding: 0.3rem 0.7rem;
-        width: auto;
-        text-align: center;
-        margin: 0.1rem 0;
-        border-radius: 0.4rem;
+        padding: 7px 10px;
+        font-size: 0.75rem;
       }
+      main { padding: 100px 16px 60px; }
+      .hero { padding: 40px 0 20px; }
+      .hero h1 { font-size: 2.6rem; }
+      .card { padding: 24px; }
+      .profile-row { flex-direction: column; gap: 16px; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .project-grid { grid-template-columns: 1fr; }
+      .tool-grid { grid-template-columns: repeat(3, 1fr); }
     }
 
-    /* Retro mód */
-    body.retro {
-      font-family: "Comic Sans MS", "Courier New", Courier, monospace !important;
-      background: #00b140 url('/buttons/savewalterwhite.gif') repeat !important;
-      color: #222 !important;
-      letter-spacing: 0;
-      cursor: url('/buttons/curso/Windows 95_98 Arrow & Logo Animated--cursor--SweezyCursors..ani'), url('/buttons/curso/Windows 95_98 Arrow & Logo Animated--pointer--SweezyCursors..cur'), auto !important;
-    }
-    body.retro header,
-    body.retro nav,
-    body.retro section,
-    body.retro footer {
-      background: #00b140 !important;
-      color: #fff !important;
-      border-radius: 0 !important;
-      box-shadow: none !important;
-      border: 3px ridge #ff0 !important;
-    }
-    body.retro header h1,
-    body.retro section h2 {
-      color: #fff !important;
-      background: none !important;
-      -webkit-text-fill-color: unset !important;
-      text-shadow: 2px 2px 0 #ff0, 4px 4px 0 #000 !important;
-      border-bottom: 3px dotted #ff0 !important;
-      font-family: "Comic Sans MS", "Courier New", Courier, monospace !important;
-      letter-spacing: 2px;
-    }
-    body.retro nav a {
-      color: #fff !important;
-      background: #00b140 !important;
-      border: 2px outset #ff0 !important;
-      font-family: "Comic Sans MS", "Courier New", Courier, monospace !important;
-      text-shadow: 1px 1px 0 #000;
-    }
-    body.retro nav a:hover {
-      background: #ff0 !important;
-      color: #00b140 !important;
-      border: 2px inset #00b140 !important;
-    }
-    body.retro .project,
-    body.retro .tool-icons div,
-    body.retro .kontakt-icons a img {
-      background: #fff !important;
-      color: #00b140 !important;
-      border: 2px dashed #00b140 !important;
-      box-shadow: none !important;
-      border-radius: 0 !important;
-    }
-    body.retro .project h3 {
-      color: #00b140 !important;
-      font-family: "Comic Sans MS", "Courier New", Courier, monospace !important;
-      border-bottom: 2px dashed #ff0 !important;
-      text-shadow: 1px 1px 0 #ff0;
-    }
-    body.retro .button {
-      background: #ff0 !important;
-      color: #00b140 !important;
-      border: 2px outset #00b140 !important;
-      font-family: "Comic Sans MS", "Courier New", Courier, monospace !important;
-      text-shadow: 1px 1px 0 #fff;
-    }
-    body.retro .button:hover {
-      background: #00b140 !important;
-      color: #fff !important;
-      border: 2px inset #ff0 !important;
-    }
-    body.retro img,
-    body.retro .profile img {
-      filter: none !important;
-      border-radius: 0 !important;
-      border: 3px solid #ff0 !important;
-      box-shadow: 4px 4px 0 #000 !important;
-      background: #fff !important;
-    }
-    body.retro a {
-      color: #ff0 !important;
-      text-decoration: underline !important;
-      font-weight: bold;
-      text-shadow: 1px 1px 0 #000;
-    }
-    body.retro #retro-buttons-top img {
-      filter: none !important;
-      border: 2px solid #ff0 !important;
-      box-shadow: 2px 2px 0 #000 !important;
-      background: #fff !important;
-    }
-    body.retro #retro-buttons-top {
-      background: #00b140 !important;
-      border: 3px ridge #ff0 !important;
-      padding: 8px 0;
-    }
-    body.retro footer {
-      border-top: 6px double #ff0 !important;
-      color: #fff !important;
-      background: #00b140 !important;
-      text-shadow: 1px 1px 0 #000;
-    }
-    body.retro .goodreads-widget,
-    body.retro #spotify-widget {
-      background: #fff !important;
-      border: 2px dashed #00b140 !important;
-      color: #00b140 !important;
-      font-family: "Comic Sans MS", "Courier New", Courier, monospace !important;
-      box-shadow: none !important;
-      border-radius: 0 !important;
-    }
-
-    /* Přidej do CSS retro Winamp styl pro sekci Právě poslouchám */
-    body.retro #spotify-widget {
-      background: #222 !important;
-      border: 2px solid #ffcc00 !important;
-      color: #fff !important;
-      font-family: "Tahoma", "Verdana", "Geneva", sans-serif !important;
-      border-radius: 0 !important;
-      box-shadow: 0 0 0 2px #000 !important;
-      padding: 12px 16px !important;
-      max-width: 420px;
-      margin: 0 auto;
-      position: relative;
-    }
-    body.retro #spotify-widget .winamp-title {
-      font-size: 1.1em;
-      font-weight: bold;
-      color: #ffcc00;
-      background: #333;
-      padding: 4px 8px;
-      border: 1px solid #ffcc00;
-      margin-bottom: 8px;
-      letter-spacing: 1px;
-      font-family: "Tahoma", "Verdana", "Geneva", sans-serif !important;
-      text-shadow: 1px 1px 0 #000;
-      border-radius: 0;
-      display: inline-block;
-    }
-    body.retro #spotify-widget .winamp-bar {
-      background: linear-gradient(90deg, #ffcc00 60%, #333 100%);
-      height: 12px;
-      border: 1px solid #ffcc00;
-      margin: 10px 0 6px 0;
-      border-radius: 0;
-      position: relative;
-      width: 100%;
-      max-width: 320px;
-      box-shadow: 0 0 0 1px #000;
-    }
-    body.retro #spotify-widget .winamp-progress {
-      background: #00c6ff;
-      height: 12px;
-      border-radius: 0;
-      position: absolute;
-      left: 0;
-      top: 0;
-    }
-    body.retro #spotify-widget .winamp-album {
-      width: 48px;
-      height: 48px;
-      border: 2px solid #ffcc00;
-      background: #333;
-      margin-right: 12px;
-      float: left;
-      box-shadow: 2px 2px 0 #000;
-    }
-    body.retro #spotify-widget .winamp-info {
-      margin-left: 60px;
-    }
-    body.retro #spotify-widget .winamp-artist {
-      color: #fff;
-      font-size: 1em;
-      margin-bottom: 2px;
-      font-family: "Tahoma", "Verdana", "Geneva", sans-serif !important;
-    }
-    body.retro #spotify-widget .winamp-time {
-      color: #ffcc00;
-      font-size: 0.95em;
-      font-family: "Tahoma", "Verdana", "Geneva", sans-serif !important;
-    }
-    body.retro #spotify-widget .winamp-paused {
-      color: #ffcc00;
-      font-size: 0.95em;
-      margin-top: 4px;
-      font-family: "Tahoma", "Verdana", "Geneva", sans-serif !important;
-    }
-    body.retro #spotify-widget .winamp-clear {
-      clear: both;
-    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Adam Hornof</h1>
-    <p>Student • Tvůrce • Geek</p>
-  </header>
-  <nav>
+
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+
+  <nav id="main-nav">
     <a href="#o-mne">O mně</a>
     <a href="#projekty">Projekty</a>
     <a href="#stack">Stack</a>
-    <a href="#prave-ctu">Právě čtu</a>
+    <a href="#prave-ctu">Čtu</a>
     <a href="#kontakt">Kontakt</a>
   </nav>
+
   <main>
-    <section id="o-mne">
-      <h2>O mně</h2>
-      <div class="profile">
-        <img src="/me.png" alt="Adam Hornof">
-        <div class="profile-info">
+
+    <!-- HERO -->
+    <div class="hero" id="o-mne-anchor"></div>
+
+    <!-- O MNĚ -->
+    <section class="card" id="o-mne">
+      <div class="section-label">O mně</div>
+      <div class="profile-row">
+        <img src="/me.png" alt="Adam Hornof" class="profile-avatar">
+        <div class="profile-text">
+          <h2 style="margin-bottom:12px;">Ahoj, jsem Adam Hornof</h2>
           <p>
-            Jsem Adam Hornof – <span id="age"></span>letý student a tvůrce webů, který se nebojí zkoušet nové věci.<br>
-            Věnuji se projektům, které mají smysl, od technické podpory neziskovek až po vlastní e-shopy.<br>
+            <span id="age"></span>letý student a tvůrce webů, který se nebojí zkoušet nové věci.<br>
+            Věnuji se projektům, které mají smysl – od technické podpory neziskovek až po vlastní e-shopy.<br>
             Baví mě ecommerce, technologie a čistý webový design.
           </p>
         </div>
       </div>
-      <h2 style="margin-top:2rem;">Právě poslouchám</h2>
-      <div id="spotify-widget"></div>
+
+      <div class="spotify-wrapper">
+        <div class="now-playing-label">
+          <div class="pulse-dot"></div>
+          Právě poslouchám
+        </div>
+        <div id="spotify-widget">
+          <div style="color:var(--muted);font-size:0.9rem;">Načítám…</div>
+        </div>
+      </div>
     </section>
 
-    <section id="projekty">
-      <h2>Projekty</h2>
-      <div style="margin-bottom:2rem;">
-        <label for="project-tag-filter" style="font-weight:600;color:#00c6ff;margin-right:1rem;">Filtrovat podle štítku:</label>
-        <select id="project-tag-filter" style="padding:0.5rem 1rem;border-radius:0.7rem;border:none;background:#23283a;color:#fff;font-size:1.1rem;">
-          <option value="all">Vše</option>
-          <option value="wordpress">WordPress</option>
-          <option value="ecommerce">Ecommerce</option>
-        </select>
+    <!-- PROJEKTY -->
+    <section class="card" id="projekty">
+      <div class="section-label">Projekty</div>
+      <h2>Co jsem dělal</h2>
+
+      <div class="filter-row">
+        <button class="filter-btn active" data-tag="all">Vše</button>
+        <button class="filter-btn" data-tag="wordpress">WordPress</button>
+        <button class="filter-btn" data-tag="ecommerce">Ecommerce</button>
       </div>
-      <div class="project-list" id="project-list">
+
+      <div class="project-grid" id="project-list">
+
         <div class="project" data-tags="wordpress">
+          <span class="project-tag">WordPress</span>
           <h3>QR Darovací Formulář</h3>
-          <p>WordPress plugin pro neziskovky a projekty, které chtějí přijímat příspěvky pomocí QR platby. Umožňuje víc účtů, vlastní poznámky a je extrémně jednoduchý pro BFU.</p>
+          <p>Plugin pro neziskovky – přijímání příspěvků pomocí QR platby. Více účtů, vlastní poznámky, jednoduché ovládání.</p>
           <ul>
-            <li>✅ Podpora více účtů a poznámek</li>
-            <li>✅ Generuje QR kód přes Paylibo API</li>
-            <li>✅ Proměnná <code>{{jmeno}}</code> v poznámce pro příjemce</li>
-            <li>✅ Uživatelsky přívětivá administrace</li>
+            <li>Podpora více účtů a poznámek</li>
+            <li>Generuje QR kód přes Paylibo API</li>
+            <li>Proměnná <code style="color:var(--cyan);background:rgba(0,229,255,0.08);padding:1px 5px;border-radius:4px;">{{jmeno}}</code> v poznámce</li>
+            <li>Uživatelsky přívětivá administrace</li>
           </ul>
-          <a class="button" href="https://github.com/adamhornofmedia/QR-Darovaci-Formular/tree/main">Zobrazit na GitHubu</a>
-          <a class="button" href="https://stastny-usmev.cz/sponzorstvi-a-dary/">Plugin na webu Šťastný úsměv, z.s.</a>
+          <div class="project-links">
+            <a class="button" href="https://github.com/adamhornofmedia/QR-Darovaci-Formular/tree/main" target="_blank">GitHub →</a>
+            <a class="button" href="https://stastny-usmev.cz/sponzorstvi-a-dary/" target="_blank">Demo →</a>
+          </div>
         </div>
+
         <div class="project" data-tags="ecommerce">
+          <span class="project-tag">Ecommerce</span>
           <h3>TechMerch.cz</h3>
           <p>E-shop s technologicky laděnými tričky.</p>
-          <a class="button" href="https://techmerch.cz" target="_blank">Zobrazit</a>
+          <div class="project-links">
+            <a class="button" href="https://techmerch.cz" target="_blank">Zobrazit →</a>
+          </div>
         </div>
+
         <div class="project" data-tags="wordpress">
+          <span class="project-tag">WordPress</span>
           <h3>Šťastný úsměv, z.s.</h3>
-          <p>Pro neziskovou organizaci Šťastný úsměv, z.s. zajišťuji kompletní technickou správu – od běžné údržby webu na WordPressu až po podporu Google Workspace (e-maily, Drive, Kalendář). Pomáhám jim soustředit se na jejich činnost tím, že se starám o technické zázemí.</p>
+          <p>Kompletní technická správa neziskové organizace – WordPress, Google Workspace, DNS, nakladatelství.</p>
           <ul>
-            <li>✅ Nakladatelská činnost - řeším vydávání knih spolku</li>
-            <li>✅ Správa WordPress webu (aktualizace, úpravy obsahu, zálohování)</li>
-            <li>✅ Google Workspace – účty, DNS, e-mailová doména</li>
+            <li>Nakladatelská činnost – vydávání knih spolku</li>
+            <li>WordPress (aktualizace, obsah, zálohování)</li>
+            <li>Google Workspace – účty, DNS, e-mail</li>
           </ul>
-          <a class="button" href="https://stastny-usmev.cz/?adamhornof.cz" target="_blank">Zobrazit</a>
+          <div class="project-links">
+            <a class="button" href="https://stastny-usmev.cz/?adamhornof.cz" target="_blank">Zobrazit →</a>
+          </div>
         </div>
+
         <div class="project" data-tags="wordpress">
+          <span class="project-tag">WordPress</span>
           <h3>CovidPřehled.cz</h3>
-          <p>Jednoduchý web, který během pandemie přehledně zobrazoval statistiky o COVID-19 v Česku. Nabízel upozornění na opatření přímo do telefonu a generátor čestného prohlášení pro přechod mezi okresy.</p>
+          <p>Web zobrazující statistiky COVID-19 v Česku. Upozornění na opatření a generátor čestného prohlášení. Provoz 2020–2022.</p>
           <ul>
-            <li>✅ Sběr a aktualizace dat (MZČR a další otevřené zdroje)</li>
-            <li>✅ Přehledné statistiky, upozornění a generátor pro uživatele</li>
-            <li>✅ Responsivní design a jednoduché ovládání</li>
+            <li>Sběr a aktualizace dat (MZČR)</li>
+            <li>Přehledné statistiky a generátor</li>
+            <li>Responsivní design</li>
           </ul>
-          <p>🗓️ Projekt běžel během let 2020–2022.</p>
         </div>
+
         <div class="project" data-tags="wordpress">
-          <h3>XQE.cz – Technologický blog</h3>
+          <span class="project-tag">WordPress</span>
+          <h3>XQE.cz</h3>
           <p>Osobní blog o technologiích, digitální produktivitě a nástrojích.</p>
-          <a class="button" href="https://xqe.cz/?adamhornof.cz" target="_blank">Zobrazit</a>
+          <div class="project-links">
+            <a class="button" href="https://xqe.cz/?adamhornof.cz" target="_blank">Zobrazit →</a>
+          </div>
         </div>
+
       </div>
     </section>
-    <section id="stack">
-      <h2>Používám</h2>
-      <div class="tool-icons">
-        <div>
+
+    <!-- STACK -->
+    <section class="card" id="stack">
+      <div class="section-label">Stack</div>
+      <h2>Co používám</h2>
+      <div class="tool-grid">
+        <div class="tool-item">
           <img src="/icons/wordpress.svg" alt="WordPress">
           <p>WordPress</p>
         </div>
-        <div>
+        <div class="tool-item">
           <img src="/icons/woocommerce.svg" alt="WooCommerce">
           <p>WooCommerce</p>
         </div>
-        <div>
+        <div class="tool-item">
           <img src="/icons/analytics.svg" alt="Google Analytics">
-          <p>Google Analytics</p>
+          <p>Analytics</p>
         </div>
-        <div>
+        <div class="tool-item">
           <img src="/icons/workspace.svg" alt="Google Workspace">
-          <p>Google Workspace</p>
+          <p>Workspace</p>
         </div>
-        <div>
+        <div class="tool-item">
           <img src="/icons/figma.svg" alt="Figma">
           <p>Figma</p>
         </div>
-        <div>
-          <img src="/icons/javascript.svg" alt="JavaScript" title="JavaScript" />
-          <div style="margin-top:0.4rem;font-size:0.98em;color:#aaa;">JavaScript</div>
+        <div class="tool-item">
+          <img src="/icons/javascript.svg" alt="JavaScript">
+          <p>JavaScript</p>
         </div>
       </div>
     </section>
-    <section id="prave-ctu">
-      <h2>Právě čtu</h2>
-      <div id="goodreads-widget" class="goodreads-widget">Načítám...</div>
-    </section>
-    <section id="kontakt">
-      <h2>Kontakt</h2>
-      <p>Chceš spolupracovat, máš dotaz nebo nápad? Napiš mi přímo:</p>
-      <div class="kontakt-icons" style="justify-content:center;">
-        <a href="mailto:jsem@adamhornof.cz" title="Email" target="_blank" rel="noopener noreferrer">
-          <img src="/icons/email.svg" alt="Email" />
-        </a>
-        <a href="https://www.linkedin.com/in/adamhornof/" title="LinkedIn" target="_blank" rel="noopener noreferrer">
-          <img src="/icons/linkedin.svg" alt="LinkedIn" />
-        </a>
-        <a href="tel:+420727823415" title="Telefon" target="_blank" rel="noopener noreferrer">
-          <img src="/icons/telefon.svg" alt="Telefon" />
-        </a>
-      </div>
-      <div style="margin-top: 1.2rem; text-align: center;">
-        <a href="mailto:jsem@adamhornof.cz"
-           style="
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            color: #fff;
-            font-weight: 700;
-            font-size: 1.15rem;
-            text-decoration: none;
-            padding: 0.8rem 2rem;
-            border-radius: 0.7rem;
-            box-shadow: 0 2px 12px #00c6ff22;
-            display: inline-block;
-            transition: background 0.2s, color 0.2s, transform 0.2s;
-            border: none;
-            letter-spacing: 0.5px;
-           "
-           onmouseover="this.style.background='linear-gradient(90deg, var(--secondary), var(--primary))';this.style.color='#10131a';this.style.transform='scale(1.05)'"
-           onmouseout="this.style.background='linear-gradient(90deg, var(--primary), var(--secondary))';this.style.color='#fff';this.style.transform='scale(1)'"
-        >Napsat e-mail</a>
-        <div style="margin-top:0.7rem;font-size:1.08rem;color:#aaa;">
-          <span style="color:#00c6ff;font-weight:600;">jsem@adamhornof.cz</span><br>
-          <span style="color:#00c6ff;font-weight:600;">
-            <img src="/icons/telefon.svg" alt="Telefon" style="vertical-align:middle;width:20px;height:20px;margin-right:6px;">
-            <a href="tel:+420727823415" style="color:#00c6ff;text-decoration:none;">+420 727&nbsp;823&nbsp;415</a>
-          </span>
-        </div>
-      </div>
-    </section>
-    
-    <section id="social">
-      <h2>Kde mě najdeš?</h2>
-      <div class="kontakt-icons">
-        <a href="https://github.com/adamhornofmedia" title="GitHub" target="_blank" rel="noopener noreferrer">
-          <img src="/icons/github.svg" alt="GitHub" />
-        </a>
-        <a href="https://www.printables.com/@adamhornof" title="Printables" target="_blank" rel="noopener noreferrer">
-          <img src="/icons/printables-logo.svg" alt="Printables" />
-        </a>
-        <a href="https://www.csfd.cz/uzivatel/606787-adam-hornof/prehled/" title="ČSFD" target="_blank" rel="noopener noreferrer">
-          <img src="/icons/csfd.svg" alt="ČSFD" style="width:46px;height:46px;" />
-        </a>
-        <a href="https://www.goodreads.com/nejsemzpardubic" title="Goodreads" target="_blank" rel="noopener noreferrer">
-          <img src="/icons/goodreads.svg" alt="Goodreads" />
-        </a>
-        <a href="https://m.me/adamhornof" title="Messenger" target="_blank" rel="noopener noreferrer">
-          <img src="/icons/messenger.svg" alt="Messenger" />
-        </a>
-        <a href="https://discord.com/users/417027300023074864" title="Discord" target="_blank" rel="noopener noreferrer">
-          <img src="/icons/discord.svg" alt="Discord" />
-        </a>
-        <a href="https://lounge.nintendo.com/friendcode/8132-0856-9509/C1dlq8BkPG" title="Nintendo Switch" target="_blank" rel="noopener noreferrer">
-          <img src="/icons/switch.svg" alt="Nintendo Switch" />
-        </a>
-        <a href="https://steamcommunity.com/id/nejsemzpardubic/" title="Steam" target="_blank" rel="noopener noreferrer">
-          <img src="/icons/steam.svg" alt="Steam" />
-        </a>
-      </div>
-    </section>
-  </main>
-  <footer>
-    &copy; <span id="currentYear"></span> Adam Hornof. Všechna práva vyhrazena.<br>
-    IČO: 23294566<br>
-    Sídlo: Nové sady 988/2, Brno, 602 00
-  </footer>
-  <script>
-    document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-    // Věk podle data narození
-    function calculateAge(birthDateString) {
-      const today = new Date();
-      const birthDate = new Date(birthDateString);
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const m = today.getMonth() - birthDate.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
-      return age;
+    <!-- PRÁVĚ ČTU -->
+    <section class="card" id="prave-ctu">
+      <div class="section-label">Knihy</div>
+      <h2>Právě čtu</h2>
+      <div id="goodreads-widget" style="color:var(--muted);">Načítám…</div>
+    </section>
+
+    <!-- KONTAKT -->
+    <section class="card" id="kontakt">
+      <div class="section-label">Kontakt</div>
+      <h2>Pojďme spolupracovat</h2>
+      <p style="color:var(--muted);margin-bottom:24px;font-size:0.95rem;">Máš dotaz, nápad nebo chceš spolupracovat? Napiš mi.</p>
+
+      <div class="contact-grid">
+        <a href="/cdn-cgi/l/email-protection#620811070f220306030f0a0d100c0d044c0118" class="contact-item">
+          <div class="contact-icon-wrap">
+            <img src="/icons/email.svg" alt="Email">
+          </div>
+          <div class="contact-item-info">
+            <strong>Email</strong>
+            <span>Napiš mi</span>
+          </div>
+        </a>
+        <a href="https://www.linkedin.com/in/adamhornof/" class="contact-item" target="_blank">
+          <div class="contact-icon-wrap">
+            <img src="/icons/linkedin.svg" alt="LinkedIn">
+          </div>
+          <div class="contact-item-info">
+            <strong>LinkedIn</strong>
+            <span>adamhornof</span>
+          </div>
+        </a>
+        <a href="tel:+420727823415" class="contact-item">
+          <div class="contact-icon-wrap">
+            <img src="/icons/telefon.svg" alt="Telefon">
+          </div>
+          <div class="contact-item-info">
+            <strong>Telefon</strong>
+            <span>+420 727 823 415</span>
+          </div>
+        </a>
+        <a href="/cdn-cgi/l/email-protection#620811070f220306030f0a0d100c0d044c0118" class="cta-email" target="_blank">
+          Napsat e-mail →
+        </a>
+      </div>
+    </section>
+
+    <!-- SOCIAL -->
+    <section class="card" id="social">
+      <div class="section-label">Kde mě najdeš</div>
+      <h2>Sociální sítě</h2>
+      <div class="social-grid">
+        <a href="https://github.com/adamhornofmedia" class="social-item" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/github.svg" alt="GitHub"> GitHub
+        </a>
+        <a href="https://www.printables.com/@adamhornof" class="social-item" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/printables-logo.svg" alt="Printables"> Printables
+        </a>
+        <a href="https://www.csfd.cz/uzivatel/606787-adam-hornof/prehled/" class="social-item" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/csfd.svg" alt="ČSFD" style="width:20px;height:20px;"> ČSFD
+        </a>
+        <a href="https://www.goodreads.com/nejsemzpardubic" class="social-item" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/goodreads.svg" alt="Goodreads"> Goodreads
+        </a>
+        <a href="https://m.me/adamhornof" class="social-item" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/messenger.svg" alt="Messenger"> Messenger
+        </a>
+        <a href="https://discord.com/users/417027300023074864" class="social-item" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/discord.svg" alt="Discord"> Discord
+        </a>
+        <a href="https://lounge.nintendo.com/friendcode/8132-0856-9509/C1dlq8BkPG" class="social-item" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/switch.svg" alt="Nintendo Switch"> Nintendo Switch
+        </a>
+        <a href="https://steamcommunity.com/id/nejsemzpardubic/" class="social-item" target="_blank" rel="noopener noreferrer">
+          <img src="/icons/steam.svg" alt="Steam"> Steam
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div style="font-weight:500;color:var(--text);font-family:'Syne',sans-serif;margin-bottom:8px;">Adam Hornof</div>
+    &copy; <span id="currentYear"></span> · IČO: 23294566 · Nové sady 988/2, Brno 602 00
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+  <script>
+    // Year & Age
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    function calculateAge(d) {
+      const t = new Date(), b = new Date(d);
+      let a = t.getFullYear() - b.getFullYear();
+      const m = t.getMonth() - b.getMonth();
+      if (m < 0 || (m === 0 && t.getDate() < b.getDate())) a--;
+      return a;
     }
     document.getElementById('age').textContent = calculateAge('2005-10-25');
 
-    // Spotify widget
-    let lastTrackId = null;
-    let trackEndTimestamp = null;
-    let lastSongData = null;
-    let apiInterval = null;
+    // Active nav on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('nav a');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinks.forEach(a => a.classList.remove('active'));
+          const link = document.querySelector(`nav a[href="#${entry.target.id}"]`);
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { threshold: 0.4 });
+    sections.forEach(s => observer.observe(s));
+
+    // Project filter
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const tag = this.dataset.tag;
+        document.querySelectorAll('.project').forEach(p => {
+          const tags = p.dataset.tags || '';
+          p.style.display = (tag === 'all' || tags.includes(tag)) ? '' : 'none';
+        });
+      });
+    });
+
+    // Spotify
+    let lastTrackId = null, trackEndTimestamp = null, lastSongData = null, apiInterval = null;
 
     async function loadNowPlaying() {
       try {
         const res = await fetch("https://adamhornofmedia-github-io.vercel.app/api/spotify");
         const data = await res.json();
-
         const widget = document.getElementById("spotify-widget");
         if (!widget) return;
 
         if (!data || !data.item) {
-          widget.innerHTML = `
-            <div style="display:flex;align-items:center;gap:10px;justify-content:center;">
-              <img src="/icons/spotify.svg" alt="Spotify" style="width:48px;height:48px;">
-              <div style="color:#aaa; font-size:1.1em;">Právě nic neposlouchám</div>
-            </div>
-          `;
-          lastTrackId = null;
-          trackEndTimestamp = null;
-          lastSongData = null;
-
-          if (!apiInterval) {
-            apiInterval = setInterval(loadNowPlaying, 60000);
-          }
+          widget.innerHTML = `<div style="color:var(--muted);font-size:0.9rem;display:flex;align-items:center;gap:10px;"><img src="/icons/spotify.svg" style="width:24px;height:24px;opacity:0.4;">Právě nic neposlouchám</div>`;
+          lastTrackId = null; trackEndTimestamp = null; lastSongData = null;
+          if (!apiInterval) apiInterval = setInterval(loadNowPlaying, 60000);
           return;
         }
 
-        // Pokud něco hraje, zruš interval pro obnovu API
-        if (apiInterval) {
-          clearInterval(apiInterval);
-          apiInterval = null;
-        }
+        if (apiInterval) { clearInterval(apiInterval); apiInterval = null; }
 
-        const song = data.item.name;
-        const artist = data.item.artists.map(a => a.name).join(", ");
-        const img = data.item.album.images[0].url;
-        const link = data.item.external_urls.spotify;
-        const trackId = data.item.id;
+        const { name: song, artists, album, external_urls, id: trackId, duration_ms: durationMs } = data.item;
+        const artist = artists.map(a => a.name).join(", ");
+        const img = album.images[0].url;
+        const link = external_urls.spotify;
         const progressMs = data.progress_ms;
-        const durationMs = data.item.duration_ms;
         const isPlaying = data.is_playing;
 
         lastSongData = { song, artist, img, link, durationMs, progressMs, isPlaying };
-
         if (trackId !== lastTrackId) {
           lastTrackId = trackId;
           trackEndTimestamp = Date.now() + (durationMs - progressMs);
         }
 
-        let remainingMs, playedMs, progressWidth;
-        if (isPlaying) {
-          remainingMs = trackEndTimestamp - Date.now();
-          if (remainingMs < 0) remainingMs = 0;
-          playedMs = durationMs - remainingMs;
-        } else {
-          playedMs = progressMs;
-          remainingMs = durationMs - playedMs;
-        }
-        progressWidth = Math.round(playedMs / durationMs * 180);
-
-        const min = Math.floor(remainingMs / 60000);
-        const sec = String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, '0');
-
-        widget.innerHTML = `
-          <div style="display:flex;align-items:center;gap:10px;">
-            <img src="${img}" alt="Album cover" style="width:64px;height:64px;">
-            <div>
-              <a href="${link}" target="_blank" class="spotify-song-link">
-                ${song}
-              </a>
-              <div>${artist}</div>
-              <div style="margin-top:8px;">
-                <div class="spotify-progress-bar" style="background:#222; border-radius:4px; height:8px; width:180px; position:relative;">
-                  <div class="spotify-progress" style="background:#00c6ff; height:8px; border-radius:4px; width:${progressWidth}px;"></div>
-                </div>
-                <div class="spotify-remaining" style="font-size:0.9em; color:#aaa; margin-top:2px;">
-                  Zbývá ${min}:${sec} min
-                </div>
-                ${!isPlaying ? '<div style="color:#00c6ff; font-size:0.9em; margin-top:2px;">Pozastaveno</div>' : ''}
-              </div>
-            </div>
-          </div>
-        `;
+        updateSpotifyUI();
       } catch (e) {
         const widget = document.getElementById("spotify-widget");
-        if (widget) {
-          widget.innerHTML = `
-            <div style="display:flex;align-items:center;gap:10px;justify-content:center;">
-              <img src="/icons/spotify.svg" alt="Spotify" style="width:48px;height:48px;">
-              <div style="color:#aaa; font-size:1.1em;">Právě nic neposlouchám</div>
-            </div>
-          `;
-        }
+        if (widget) widget.innerHTML = `<div style="color:var(--muted);font-size:0.9rem;">Právě nic neposlouchám</div>`;
       }
+    }
+
+    function updateSpotifyUI() {
+      if (!lastSongData || !lastTrackId) return;
+      const widget = document.getElementById("spotify-widget");
+      const { song, artist, img, link, durationMs, isPlaying } = lastSongData;
+
+      let playedMs, remainingMs;
+      if (isPlaying) {
+        remainingMs = Math.max(0, trackEndTimestamp - Date.now());
+        playedMs = durationMs - remainingMs;
+      } else {
+        playedMs = lastSongData.progressMs;
+        remainingMs = durationMs - playedMs;
+      }
+      const pct = Math.min(100, Math.round(playedMs / durationMs * 100));
+      const min = Math.floor(remainingMs / 60000);
+      const sec = String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, '0');
+
+      // Check if widget needs full re-render or just update
+      const existingBar = widget.querySelector('.spotify-progress');
+      if (existingBar && widget.querySelector('.album-art')) {
+        existingBar.style.width = pct + '%';
+        const timeEl = widget.querySelector('.spotify-remaining');
+        if (timeEl) timeEl.textContent = `${min}:${sec} zbývá`;
+        return;
+      }
+
+      widget.innerHTML = `
+        <img src="${img}" alt="Album" class="album-art">
+        <div class="spotify-info">
+          <a href="${link}" target="_blank" class="spotify-song-link">${song}</a>
+          <div class="spotify-artist">${artist}</div>
+          <div class="spotify-bar-wrap">
+            <div class="spotify-progress" style="width:${pct}%"></div>
+          </div>
+          <div class="spotify-remaining">${min}:${sec} zbývá${!isPlaying ? ' · pozastaveno' : ''}</div>
+        </div>
+      `;
     }
 
     loadNowPlaying();
-
     setInterval(() => {
-      const widget = document.getElementById("spotify-widget");
-      if (lastTrackId && lastSongData && trackEndTimestamp) {
-        let remainingMs, playedMs, progressWidth;
-        if (lastSongData.isPlaying) {
-          remainingMs = trackEndTimestamp - Date.now();
-          if (remainingMs < 0) remainingMs = 0;
-          playedMs = lastSongData.durationMs - remainingMs;
-        } else {
-          playedMs = lastSongData.progressMs;
-          remainingMs = lastSongData.durationMs - playedMs;
-        }
-        progressWidth = Math.round(playedMs / lastSongData.durationMs * 180);
-
-        const min = Math.floor(remainingMs / 60000);
-        const sec = String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, '0');
-
-        const progressBar = widget.querySelector('.spotify-progress');
-        if (progressBar) progressBar.style.width = `${progressWidth}px`;
-        const timeDiv = widget.querySelector('.spotify-remaining');
-        if (timeDiv) timeDiv.textContent = `Zbývá ${min}:${sec} min`;
-
-        const pausedDiv = widget.querySelector('.spotify-paused');
-        if (pausedDiv) {
-          pausedDiv.style.display = lastSongData.isPlaying ? 'none' : 'block';
-        }
-
-        if (remainingMs === 0) {
-          loadNowPlaying();
-        }
+      if (lastTrackId && lastSongData) {
+        updateSpotifyUI();
+        const remaining = trackEndTimestamp - Date.now();
+        if (remaining <= 0) loadNowPlaying();
       }
     }, 1000);
 
+    // Goodreads
     async function loadCurrentlyReading() {
       const url = "https://adamhornofmedia-github-io.vercel.app/api/goodreads";
+      const widget = document.getElementById("goodreads-widget");
       try {
         const res = await fetch(url);
         const xml = await res.text();
-
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(xml, "application/xml");
+        const doc = new DOMParser().parseFromString(xml, "application/xml");
         const items = Array.from(doc.querySelectorAll("item"));
 
-        const widget = document.getElementById("goodreads-widget");
-        if (items.length === 0) {
-          widget.innerHTML = "Momentálně nečtu žádnou knihu.";
-          return;
-        }
-
-        const currentlyReading = items.filter(item => {
+        const reading = items.filter(item => {
           const desc = item.querySelector("description")?.textContent || "";
-          const readAtMatch = desc.match(/read at:\s*([^<\n\r]*)/i);
-          return readAtMatch && readAtMatch[1].trim() === "";
+          const m = desc.match(/read at:\s*([^<\n\r]*)/i);
+          return m && m[1].trim() === "";
         });
 
-        if (currentlyReading.length === 0) {
-          widget.innerHTML = "Momentálně nečtu žádnou knihu.";
-          return;
-        }
+        if (!reading.length) { widget.innerHTML = "Momentálně nečtu žádnou knihu."; return; }
 
-        widget.innerHTML = currentlyReading.map(item => {
+        widget.innerHTML = reading.map(item => {
           const desc = item.querySelector("description")?.textContent || "";
-
-          let bookUrl = "#";
-          const bookUrlMatch = desc.match(/<a href="([^"]+)"[^>]*>/i);
-          if (bookUrlMatch) bookUrl = bookUrlMatch[1];
-
-          let author = "";
-          const authorMatch = desc.match(/author:\s*([^<\n\r]+)/i);
-          if (authorMatch) {
-            author = authorMatch[1].trim();
-          }
-
-          let cover = "";
-          const imgMatch = desc.match(/<img[^>]+src="([^"]+)"[^>]*>/i);
-          if (imgMatch) cover = imgMatch[1];
-
+          const bookUrl = (desc.match(/<a href="([^"]+)"[^>]*>/i) || [,'#'])[1];
+          const author = (desc.match(/author:\s*([^<\n\r]+)/i) || ['',''])[1].trim();
+          const cover = (desc.match(/<img[^>]+src="([^"]+)"[^>]*>/i) || ['',''])[1];
           const title = item.querySelector("title")?.textContent || "";
-
           return `
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;">
-              <img src="${cover}" alt="${title}" style="width:48px;height:70px;object-fit:cover;border-radius:6px;">
+            <div style="display:flex;align-items:center;gap:16px;padding:16px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;">
+              <img src="${cover}" alt="${title}" style="width:44px;height:64px;object-fit:cover;border-radius:6px;flex-shrink:0;">
               <div>
-                <a href="${bookUrl}" target="_blank" style="color:#00c6ff;font-weight:600;text-decoration:none;">${title}</a>
-                <div style="color:#aaa;font-size:0.95em;">${author}</div>
+                <a href="${bookUrl}" target="_blank" style="color:var(--cyan);font-weight:600;text-decoration:none;font-size:0.95rem;">${title}</a>
+                <div style="color:var(--muted);font-size:0.85rem;margin-top:4px;">${author}</div>
               </div>
-            </div>
-          `;
+            </div>`;
         }).join('');
-      } catch (e) {
-        document.getElementById("goodreads-widget").innerHTML = "Nelze načíst knihy.";
-      }
+      } catch(e) { widget.innerHTML = "Nelze načíst knihy."; }
     }
     loadCurrentlyReading();
-
-    const tagFilter = document.getElementById('project-tag-filter');
-    const projectList = document.getElementById('project-list');
-    const allProjects = Array.from(projectList.children);
-
-    tagFilter.addEventListener('change', function() {
-      const tag = this.value;
-      allProjects.forEach(project => {
-        if (tag === 'all' || project.dataset.tags.includes(tag)) {
-          project.style.display = '';
-        } else {
-          project.style.display = 'none';
-        }
-      });
-    });
   </script>
 </body>
 </html>
