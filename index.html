@@ -432,9 +432,9 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      transition: all 0.25s ease;
       position: relative;
       overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     .project:hover {
@@ -443,19 +443,52 @@
       box-shadow: 0 16px 48px rgba(0,0,0,0.4);
     }
 
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
     .project-tag {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
       font-family: 'Syne', sans-serif;
       font-size: 0.68rem;
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--cyan);
-      background: rgba(0,229,255,0.08);
-      border: 1px solid rgba(0,229,255,0.15);
       border-radius: 4px;
       padding: 3px 8px;
-      align-self: flex-start;
+    }
+
+    /* sektor – zelená */
+    .project-tag.tag-sektor {
+      color: #4ade80;
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.2);
+    }
+
+    /* tech – modrá */
+    .project-tag.tag-tech {
+      color: #6ea8fe;
+      background: rgba(41,121,255,0.08);
+      border: 1px solid rgba(41,121,255,0.2);
+    }
+
+    /* role – oranžová */
+    .project-tag.tag-role {
+      color: #fb923c;
+      background: rgba(251,146,60,0.08);
+      border: 1px solid rgba(251,146,60,0.2);
+    }
+
+    /* design/kreativa – fialová */
+    .project-tag.tag-kreativa {
+      color: #a78bfa;
+      background: rgba(167,139,250,0.08);
+      border: 1px solid rgba(167,139,250,0.2);
     }
 
     .project h3 {
@@ -519,6 +552,8 @@
       color: var(--cyan);
       background: rgba(0,229,255,0.05);
     }
+
+    /* ── PROJECT TAG COLORS ── */
 
     /* ── STACK ── */
     .tool-grid {
@@ -707,15 +742,8 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 700px) {
-      nav {
-        top: 12px;
-        padding: 4px;
-        gap: 0;
-      }
-      nav a {
-        padding: 7px 10px;
-        font-size: 0.75rem;
-      }
+      nav { top: 12px; padding: 4px; gap: 0; }
+      nav a { padding: 7px 10px; font-size: 0.75rem; }
       main { padding: 100px 16px 60px; }
       .hero { padding: 40px 0 20px; }
       .hero h1 { font-size: 2.6rem; }
@@ -725,7 +753,6 @@
       .project-grid { grid-template-columns: 1fr; }
       .tool-grid { grid-template-columns: repeat(3, 1fr); }
     }
-
 
     /* ── TYPEWRITER ── */
     .typewriter-wrap {
@@ -753,34 +780,6 @@
     @keyframes blink {
       0%, 100% { border-color: var(--cyan); }
       50% { border-color: transparent; }
-    }
-
-
-    /* ── PROJECT TAG GLOW ── */
-    .project[data-tags="wordpress"]:hover {
-      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(41,121,255,0.25), 0 4px 32px rgba(41,121,255,0.12);
-      border-color: rgba(41,121,255,0.35) !important;
-    }
-
-    .project[data-tags="ecommerce"]:hover {
-      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,229,100,0.25), 0 4px 32px rgba(0,229,100,0.12);
-      border-color: rgba(0,229,100,0.35) !important;
-    }
-
-    .project[data-tags="wordpress"] .project-tag {
-      color: #6ea8fe;
-      background: rgba(41,121,255,0.1);
-      border-color: rgba(41,121,255,0.2);
-    }
-
-    .project[data-tags="ecommerce"] .project-tag {
-      color: #4ade80;
-      background: rgba(0,229,100,0.08);
-      border-color: rgba(0,229,100,0.18);
-    }
-
-    .project {
-      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
   </style>
@@ -819,14 +818,13 @@
         </div>
       </div>
 
-      <div class="spotify-wrapper">
+      <!-- Spotify – schovaný dokud API nevrátí píseň -->
+      <div class="spotify-wrapper" id="spotify-wrapper" style="display:none;">
         <div class="now-playing-label">
           <div class="pulse-dot"></div>
           Právě poslouchám
         </div>
-        <div id="spotify-widget">
-          <div style="color:var(--muted);font-size:0.9rem;">Načítám…</div>
-        </div>
+        <div id="spotify-widget"></div>
       </div>
     </section>
 
@@ -838,13 +836,18 @@
       <div class="filter-row">
         <button class="filter-btn active" data-tag="all">Vše</button>
         <button class="filter-btn" data-tag="wordpress">WordPress</button>
-        <button class="filter-btn" data-tag="ecommerce">Ecommerce</button>
+        <button class="filter-btn" data-tag="sprava-it">Správa IT</button>
+        <button class="filter-btn" data-tag="design">Design</button>
       </div>
 
       <div class="project-grid" id="project-list">
 
         <div class="project" data-tags="wordpress">
-          <span class="project-tag">WordPress</span>
+          <div class="project-tags">
+            <span class="project-tag tag-sektor">Neziskovky</span>
+            <span class="project-tag tag-tech">WordPress</span>
+            <span class="project-tag tag-role">Plugin dev</span>
+          </div>
           <h3>QR Darovací Formulář</h3>
           <p>Plugin pro neziskovky – přijímání příspěvků pomocí QR platby. Více účtů, vlastní poznámky, jednoduché ovládání.</p>
           <ul>
@@ -859,17 +862,25 @@
           </div>
         </div>
 
-        <div class="project" data-tags="ecommerce">
-          <span class="project-tag">Ecommerce</span>
+        <div class="project" data-tags="design">
+          <div class="project-tags">
+            <span class="project-tag tag-sektor">E-commerce</span>
+            <span class="project-tag tag-kreativa">Grafika</span>
+          </div>
           <h3>TechMerch.cz</h3>
-          <p>E-shop s technologicky laděnými tričky.</p>
+          <p>Grafické návrhy triček s technologickým motivem pro e-shop TechMerch.cz.</p>
           <div class="project-links">
             <a class="button" href="https://techmerch.cz" target="_blank">Zobrazit →</a>
           </div>
         </div>
 
-        <div class="project" data-tags="wordpress">
-          <span class="project-tag">WordPress</span>
+        <div class="project" data-tags="sprava-it wordpress">
+          <div class="project-tags">
+            <span class="project-tag tag-sektor">Neziskovka</span>
+            <span class="project-tag tag-tech">WordPress</span>
+            <span class="project-tag tag-tech">Google Workspace</span>
+            <span class="project-tag tag-role">IT správa</span>
+          </div>
           <h3>Šťastný úsměv, z.s.</h3>
           <p>Kompletní technická správa neziskové organizace – WordPress, Google Workspace, DNS, nakladatelství.</p>
           <ul>
@@ -883,7 +894,11 @@
         </div>
 
         <div class="project" data-tags="wordpress">
-          <span class="project-tag">WordPress</span>
+          <div class="project-tags">
+            <span class="project-tag tag-sektor">Veřejná správa</span>
+            <span class="project-tag tag-tech">WordPress</span>
+            <span class="project-tag tag-role">Správa webu</span>
+          </div>
           <h3>CovidPřehled.cz</h3>
           <p>Web zobrazující statistiky COVID-19 v Česku. Upozornění na opatření a generátor čestného prohlášení. Provoz 2020–2022.</p>
           <ul>
@@ -894,7 +909,11 @@
         </div>
 
         <div class="project" data-tags="wordpress">
-          <span class="project-tag">WordPress</span>
+          <div class="project-tags">
+            <span class="project-tag tag-sektor">Blog</span>
+            <span class="project-tag tag-tech">WordPress</span>
+            <span class="project-tag tag-role">Autor</span>
+          </div>
           <h3>XQE.cz</h3>
           <p>Osobní blog o technologiích, digitální produktivitě a nástrojích.</p>
           <div class="project-links">
@@ -957,7 +976,7 @@
           </div>
           <div class="contact-item-info">
             <strong>Email</strong>
-            <span>jsem@adamhornof.cz</span>
+            <span><span class="__cf_email__" data-cfemail="600a13050d200104010d080f120e0f064e031a">[email&#160;protected]</span></span>
           </div>
         </a>
         <a href="tel:+420727823415" class="contact-item">
@@ -1063,22 +1082,19 @@
         this.classList.add('active');
         const tag = this.dataset.tag;
         document.querySelectorAll('.project').forEach(p => {
-          const tags = p.dataset.tags || '';
+          const tags = (p.dataset.tags || '').split(' ');
           p.style.display = (tag === 'all' || tags.includes(tag)) ? '' : 'none';
         });
       });
     });
 
     // Spotify
-    // trackEnd = wall-clock timestamp kdy aktuální track skončí
-    // Každou sekundu posouváme progress lokálně; API voláme jen při:
-    //   a) načtení stránky, b) dohrání tracku, c) každých 30s jako záloha
-    let spotifyState = null; // { trackId, song, artist, img, link, durationMs, endTs, isPlaying }
+    let spotifyState = null;
     let spotifyFetching = false;
 
     function showSpotifyIdle() {
-      const w = document.getElementById('spotify-widget');
-      if (w) w.innerHTML = `<div style="color:var(--muted);font-size:0.9rem;display:flex;align-items:center;gap:10px;"><img src="/icons/spotify.svg" style="width:24px;height:24px;opacity:0.4;">Právě nic neposlouchám</div>`;
+      const wrapper = document.getElementById('spotify-wrapper');
+      if (wrapper) wrapper.style.display = 'none';
     }
 
     async function fetchSpotify() {
@@ -1097,20 +1113,14 @@
         const { name: song, artists, album, external_urls, id: trackId, duration_ms: durationMs } = data.item;
         const progressMs = data.progress_ms;
         const isPlaying = data.is_playing;
-
-        // Vždy přepočítej endTs podle čerstvých dat z API
         const endTs = isPlaying ? Date.now() + (durationMs - progressMs) : null;
 
         spotifyState = {
-          trackId,
-          song,
+          trackId, song,
           artist: artists.map(a => a.name).join(', '),
           img: album.images[0].url,
           link: external_urls.spotify,
-          durationMs,
-          progressMs,
-          isPlaying,
-          endTs,
+          durationMs, progressMs, isPlaying, endTs,
           fetchedAt: Date.now(),
         };
 
@@ -1124,9 +1134,12 @@
 
     function renderSpotify() {
       const w = document.getElementById('spotify-widget');
+      const wrapper = document.getElementById('spotify-wrapper');
       if (!w || !spotifyState) return;
-      const s = spotifyState;
 
+      wrapper.style.display = '';
+
+      const s = spotifyState;
       let playedMs, remainingMs;
       if (s.isPlaying && s.endTs) {
         remainingMs = Math.max(0, s.endTs - Date.now());
@@ -1140,7 +1153,6 @@
       const min = Math.floor(remainingMs / 60000);
       const sec = String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, '0');
 
-      // Pokud widget už renderuje tento track, jen updatuj progress
       if (w.dataset.trackId === s.trackId) {
         const bar = w.querySelector('.spotify-progress');
         const timeEl = w.querySelector('.spotify-remaining');
@@ -1149,7 +1161,6 @@
         return;
       }
 
-      // Nový track — full render
       w.dataset.trackId = s.trackId;
       w.innerHTML = `
         <img src="${s.img}" alt="Album" class="album-art">
@@ -1163,15 +1174,14 @@
         </div>`;
     }
 
-    // Každou sekundu: render + detekce konce tracku
     setInterval(() => {
       if (!spotifyState) return;
       if (spotifyState.isPlaying && spotifyState.endTs) {
         const remaining = spotifyState.endTs - Date.now();
         if (remaining <= 0) {
-          // Track dohrál — fetch nové písničky (s krátkým zpožděním aby API stihlo přepnout)
           spotifyState = null;
           document.getElementById('spotify-widget').dataset.trackId = '';
+          showSpotifyIdle();
           setTimeout(fetchSpotify, 2000);
           return;
         }
@@ -1179,9 +1189,7 @@
       renderSpotify();
     }, 1000);
 
-    // Záložní refresh každých 30s (zachytí ruční přeskočení tracku)
     setInterval(fetchSpotify, 30000);
-
 
     // Typewriter
     const twWords = ['Student', 'Tvůrce', 'Geek', 'Webař', 'Brňák'];
@@ -1246,9 +1254,12 @@
               </div>
             </div>`;
         }).join('');
-      } catch(e) { widget.innerHTML = "Nelze načíst knihy."; }
+      } catch (e) {
+        widget.innerHTML = "Nepodařilo se načíst knihy.";
+      }
     }
     loadCurrentlyReading();
+
   </script>
 </body>
 </html>
