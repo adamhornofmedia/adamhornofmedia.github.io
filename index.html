@@ -491,6 +491,13 @@
       border: 1px solid rgba(167,139,250,0.2);
     }
 
+    /* vlastní projekt – cyan */
+    .project-tag.tag-projekt {
+      color: #00e5ff;
+      background: rgba(0,229,255,0.08);
+      border: 1px solid rgba(0,229,255,0.2);
+    }
+
     .project h3 {
       font-family: 'Syne', sans-serif;
       font-size: 1.05rem;
@@ -953,6 +960,10 @@
           <img src="/icons/javascript.svg" alt="JavaScript">
           <p>JavaScript</p>
         </div>
+        <div class="tool-item">
+          <img src="/icons/php.svg" alt="PHP">
+          <p>PHP</p>
+        </div>
       </div>
     </section>
 
@@ -1064,16 +1075,20 @@
     // Active nav on scroll
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('nav a');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          navLinks.forEach(a => a.classList.remove('active'));
-          const link = document.querySelector(`nav a[href="#${entry.target.id}"]`);
-          if (link) link.classList.add('active');
-        }
+
+    function updateActiveNav() {
+      const scrollY = window.scrollY + 120;
+      let current = null;
+      sections.forEach(s => {
+        if (s.offsetTop <= scrollY) current = s.id;
       });
-    }, { threshold: 0.4 });
-    sections.forEach(s => observer.observe(s));
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+      });
+    }
+
+    window.addEventListener('scroll', updateActiveNav, { passive: true });
+    updateActiveNav();
 
     // Project filter
     document.querySelectorAll('.filter-btn').forEach(btn => {
