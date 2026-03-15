@@ -82,30 +82,65 @@ animateOnScroll.forEach(el => {
     observer.observe(el);
 });
 
-// Form handling
+// Form handling with floating labels
 const contactForm = document.querySelector('.contact-form');
+if (contactForm) {
+    const formInputs = contactForm.querySelectorAll('input, textarea, select');
 
-contactForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    // Get form data
-    const formData = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        eventType: document.getElementById('event-type').value,
-        message: document.getElementById('message').value
-    };
-    
-    // Here you would typically send the data to a server
-    console.log('Form submitted:', formData);
-    
-    // Show success message (you can customize this)
-    alert('Děkujeme za vaši zprávu! Ozveme se vám co nejdříve.');
-    
-    // Reset form
-    contactForm.reset();
-});
+    // Handle floating labels - prevent select from jumping
+    formInputs.forEach(input => {
+        // Set initial state
+        if (input.value && input.value.trim() !== '') {
+            input.parentElement.classList.add('filled');
+        }
+        
+        // On change
+        if (input.tagName === 'SELECT') {
+            input.addEventListener('change', (e) => {
+                if (e.target.value && e.target.value.trim() !== '') {
+                    e.target.parentElement.classList.add('filled');
+                } else {
+                    e.target.parentElement.classList.remove('filled');
+                }
+            });
+        } else {
+            input.addEventListener('input', (e) => {
+                if (e.target.value && e.target.value.trim() !== '') {
+                    e.target.parentElement.classList.add('filled');
+                } else {
+                    e.target.parentElement.classList.remove('filled');
+                }
+            });
+        }
+    });
+
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        // Get form data
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            eventType: document.getElementById('event-type').value,
+            message: document.getElementById('message').value
+        };
+        
+        // Here you would typically send the data to a server
+        console.log('Form submitted:', formData);
+        
+        // Show success message (you can customize this)
+        alert('Děkujeme za vaši zprávu! Ozveme se vám co nejdříve.');
+        
+        // Reset form
+        contactForm.reset();
+        
+        // Remove filled classes after reset
+        formInputs.forEach(input => {
+            input.parentElement.classList.remove('filled');
+        });
+    });
+}
 
 // Parallax effect for hero shapes
 window.addEventListener('scroll', () => {
